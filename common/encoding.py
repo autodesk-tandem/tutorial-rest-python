@@ -1,7 +1,12 @@
 import base64
 import struct
 
-from .constants import *
+from .constants import (
+    ELEMENT_FLAGS_SIZE,
+    ELEMENT_ID_WITH_FLAGS_SIZE,
+    KEY_FLAGS_LOGICAL,
+    KEY_FLAGS_PHYSICAL
+)
 
 
 def to_element_GUID(key: str) -> str:
