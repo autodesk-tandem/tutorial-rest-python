@@ -25,7 +25,7 @@ class TandemClient:
     def __exit__(self, *args: any)-> None:
         pass
 
-    def get_elements(self, model_id: str, element_ids: List[str]) -> Any:
+    def get_elements(self, model_id: str, element_ids: List[str] | None = None) -> Any:
         """
         Returns list of elements for given model.
         """
@@ -37,7 +37,7 @@ class TandemClient:
             'includeHistory': False,
             'skipArrays': True
         }
-        if len(element_ids) > 0:
+        if element_ids is not None and len(element_ids) > 0:
             inputs['keys'] = element_ids
         result = self.__post(token, endpoint, inputs)
         return result[1:]
@@ -49,6 +49,15 @@ class TandemClient:
 
         token = self.__authProvider()
         endpoint = f'twins/{facility_id}'
+        return self.__get(token, endpoint)
+    
+    def get_facility_template(self, facility_id: str) -> Any:
+        """
+        Retuns facility teplate for given facilty urn.
+        """
+
+        token = self.__authProvider()
+        endpoint = f'twins/{facility_id}/inlinetemplate'
         return self.__get(token, endpoint)
     
     def get_model_schema(self, model_id: str) -> Any:
