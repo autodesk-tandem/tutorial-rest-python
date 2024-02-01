@@ -4,6 +4,7 @@ from typing import Tuple
 
 from .constants import (
     ELEMENT_FLAGS_SIZE,
+    ELEMENT_ID_SIZE,
     ELEMENT_ID_WITH_FLAGS_SIZE,
     KEY_FLAGS_LOGICAL,
     KEY_FLAGS_PHYSICAL,
@@ -52,12 +53,19 @@ def to_full_key(short_key: str, is_logical: bool = False) -> str:
     full_key[ELEMENT_FLAGS_SIZE:] = buff
     return __make_web_safe(base64.b64encode(full_key).decode('utf-8'))
 
+def to_short_key(full_key: str) -> str:
+    """ Converts full key to short key."""
+
+    txt = __b64_prepare(full_key)
+    buff = base64.b64decode(txt)
+    key = bytearray(ELEMENT_ID_SIZE)
+    key[0:] = buff[ELEMENT_FLAGS_SIZE:]
+    return __make_web_safe(base64.b64encode(key).decode('utf-8'))
+
 def __b64_prepare(text: str) -> str:
     result = text.replace('-', '+')
     result = result.replace('_', '/')
-    count = len(result) % 4
-    if count > 0:
-        result = result + '=' * (4 - count)
+    result += '=' * (len(result) % 4)
     return result
 
 def __make_web_safe(text: str) -> str:
