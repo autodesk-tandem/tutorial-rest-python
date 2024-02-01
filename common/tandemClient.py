@@ -5,6 +5,8 @@ from .constants import (
     COLUMN_FAMILIES_DTPROPERTIES,
     COLUMN_FAMILIES_REFS,
     COLUMN_FAMILIES_STANDARD,
+    ELEMENT_FLAGS_LEVEL,
+    ELEMENT_FLAGS_ROOM,
     ELEMENT_FLAGS_STREAM,
     QC_ELEMENT_FLAGS
 )
@@ -27,7 +29,15 @@ class TandemClient:
     def __exit__(self, *args: any)-> None:
         pass
 
-    def get_elements(self, model_id: str, element_ids: List[str] | None = None) -> Any:
+    def get_element(self, model_id: str, key: str, column_families: List[str] = [ COLUMN_FAMILIES_STANDARD ]) -> Any:
+        """
+        Returns element for given key.
+        """
+
+        data = self.get_elements(model_id, [ key ], column_families)
+        return data[0]
+
+    def get_elements(self, model_id: str, element_ids: List[str] | None = None, column_families: List[str] = [ COLUMN_FAMILIES_STANDARD ]) -> Any:
         """
         Returns list of elements for given model.
         """
@@ -35,7 +45,7 @@ class TandemClient:
         token = self.__authProvider()
         endpoint = f'modeldata/{model_id}/scan'
         inputs = {
-            'families': [ COLUMN_FAMILIES_STANDARD ],
+            'families': column_families,
             'includeHistory': False,
             'skipArrays': True
         }
@@ -62,6 +72,29 @@ class TandemClient:
         endpoint = f'twins/{facility_id}/inlinetemplate'
         return self.__get(token, endpoint)
     
+    def get_levels(self, model_id: str, column_families: List[str] = [ COLUMN_FAMILIES_STANDARD ]) -> Any:
+        """
+        Returns level elements from given model.
+        """
+        
+        token = self.__authProvider()
+        endpoint = f'modeldata/{model_id}/scan'
+        inputs = {
+            'families': column_families,
+            'includeHistory': False,
+            'skipArrays': True
+        }
+        data = self.__post(token, endpoint, inputs)
+        results = []
+
+        for elem in data:
+            if elem == 'v1':
+                continue
+            flags = elem.get(QC_ELEMENT_FLAGS)
+            if flags == ELEMENT_FLAGS_LEVEL:
+                results.append(elem)
+        return results
+    
     def get_model_schema(self, model_id: str) -> Any:
         """
         Returns schema for given model URN.
@@ -70,6 +103,29 @@ class TandemClient:
         token = self.__authProvider()
         endpoint = f'modeldata/{model_id}/schema'
         return self.__get(token, endpoint)
+    
+    def get_rooms(self, model_id: str, column_families: List[str] = [ COLUMN_FAMILIES_STANDARD ]) -> Any:
+        """
+        Returns room elements from given model.
+        """
+        
+        token = self.__authProvider()
+        endpoint = f'modeldata/{model_id}/scan'
+        inputs = {
+            'families': column_families,
+            'includeHistory': False,
+            'skipArrays': True
+        }
+        data = self.__post(token, endpoint, inputs)
+        results = []
+
+        for elem in data:
+            if elem == 'v1':
+                continue
+            flags = elem.get(QC_ELEMENT_FLAGS)
+            if flags == ELEMENT_FLAGS_ROOM:
+                results.append(elem)
+        return results
     
     def get_tagged_assets(self, model_id: str) -> Any:
         """
