@@ -1,13 +1,27 @@
 import base64
 import struct
+from typing import Tuple
 
 from .constants import (
     ELEMENT_FLAGS_SIZE,
     ELEMENT_ID_WITH_FLAGS_SIZE,
     KEY_FLAGS_LOGICAL,
-    KEY_FLAGS_PHYSICAL
+    KEY_FLAGS_PHYSICAL,
+    MODEL_ID_SIZE
 )
 
+def decode_xref_key(key: str) -> Tuple[str, str]:
+    """ Decodes xref key to model id and element key."""
+
+    txt = __b64_prepare(key)
+    buff = bytearray(base64.b64decode(txt))
+    model_buff = bytearray(MODEL_ID_SIZE)
+    model_buff[0:] = buff[0:MODEL_ID_SIZE]
+    model_id = __make_web_safe(base64.b64encode(model_buff).decode('utf-8'))
+    key_buff = bytearray(MODEL_ID_SIZE)
+    key_buff[0:] = buff[MODEL_ID_SIZE:]
+    element_key = __make_web_safe(base64.b64encode(key_buff).decode('utf-8'))
+    return model_id, element_key
 
 def to_element_GUID(key: str) -> str:
     """ Converts element key to Revit GUID. Works for both short and full key. Note: It works only for models imported from Revit."""
@@ -36,7 +50,7 @@ def to_full_key(short_key: str, is_logical: bool = False) -> str:
     struct.pack_into('>I', full_key, 0, flags_value)
 
     full_key[ELEMENT_FLAGS_SIZE:] = buff
-    return base64.b64encode(full_key).decode('utf-8')
+    return __make_web_safe(base64.b64encode(full_key).decode('utf-8'))
 
 def __b64_prepare(text: str) -> str:
     result = text.replace('-', '+')
@@ -44,4 +58,10 @@ def __b64_prepare(text: str) -> str:
     count = len(result) % 4
     if count > 0:
         result = result + '=' * (4 - count)
+    return result
+
+def __make_web_safe(text: str) -> str:
+    result = text.replace('+', '-')
+    result = result.replace('/', '_')
+    result = result.rstrip('=')
     return result
