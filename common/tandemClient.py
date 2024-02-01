@@ -4,7 +4,9 @@ import requests
 from .constants import (
     COLUMN_FAMILIES_DTPROPERTIES,
     COLUMN_FAMILIES_REFS,
-    COLUMN_FAMILIES_STANDARD
+    COLUMN_FAMILIES_STANDARD,
+    ELEMENT_FLAGS_STREAM,
+    QC_ELEMENT_FLAGS
 )
 
 class TandemClient:
@@ -97,6 +99,29 @@ class TandemClient:
                 if k.startswith('z:'):
                     custom_props.append(k)
             if len(custom_props) > 0:
+                results.append(elem)
+        return results
+    
+    def get_streams(self, model_id: str, column_families: List[str] = [ COLUMN_FAMILIES_STANDARD ]) -> Any:
+        """
+        Returns stream elements from given model.
+        """
+        
+        token = self.__authProvider()
+        endpoint = f'modeldata/{model_id}/scan'
+        inputs = {
+            'families': column_families,
+            'includeHistory': False,
+            'skipArrays': True
+        }
+        data = self.__post(token, endpoint, inputs)
+        results = []
+
+        for elem in data:
+            if elem == 'v1':
+                continue
+            flags = elem.get(QC_ELEMENT_FLAGS)
+            if flags == ELEMENT_FLAGS_STREAM:
                 results.append(elem)
         return results
     
