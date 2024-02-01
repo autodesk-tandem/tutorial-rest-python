@@ -211,4 +211,6 @@ class TandemClient:
         }
         url = f'{self.__base_url}/{endpoint}'
         response = requests.post(url, headers=headers, json=data)
+        if response.status_code == 204:
+            return
         return response.json()
