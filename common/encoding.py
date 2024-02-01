@@ -62,6 +62,16 @@ def to_short_key(full_key: str) -> str:
     key[0:] = buff[ELEMENT_FLAGS_SIZE:]
     return __make_web_safe(base64.b64encode(key).decode('utf-8'))
 
+def to_xref_key(model_id: str, key: str) -> str:
+    """ Converts model id and element key to xref key."""
+
+    model_buff = base64.b64decode(__b64_prepare(model_id))
+    element_buff = base64.b64decode(__b64_prepare(key))
+    result = bytearray(MODEL_ID_SIZE + ELEMENT_ID_WITH_FLAGS_SIZE)
+    result[0:] = model_buff
+    result[MODEL_ID_SIZE:] = element_buff
+    return __make_web_safe(base64.b64encode(result).decode('utf-8'))
+
 def __b64_prepare(text: str) -> str:
     result = text.replace('-', '+')
     result = result.replace('_', '/')
