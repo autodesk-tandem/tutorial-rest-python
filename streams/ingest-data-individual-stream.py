@@ -50,7 +50,10 @@ res = requests.post(url, json=payload)
 # NOTE: some HTTP clients might not respect the url shape and not set
 # authorization header correctly - in these cases, you will receive 403 from
 # the API call. To fix this, you will need to set the header manually, i.e.
-# res = requests.post(url, auth=(username,password), json=payload)    
+# from urllib.parse import urlparse
+#
+# parsed = urlparse(url)
+# res = requests.post(f'{parsed.scheme}://{parsed.hostname}{parsed.path}', auth=(parsed.username,parsed.password), json=payload)    
 
 if res.status_code == 403:
     print('Autentication failed, check ingestion URL')
