@@ -9,9 +9,9 @@ import time
 from common.auth import create_token
 
 # update values below according to your environment
-CLIENT_ID = 'pErXeluFbvApeQYUoA7dnUoA6AoUsEv8'
-CLIENT_SECRET = 'CMslkMpATPJdJoSF'
-FACILITY_URN = 'urn:adsk.dtt:mprWPFSnT82G1ILC_4dWgA'
+APS_CLIENT_ID = 'YOUR_CLIENT_ID'
+APS_CLIENT_SECRET = 'YOUR_CLIENT_SECRET'
+FACILITY_URN = 'YOUR_FACILITY_URN'
 
 
 # Start
@@ -47,7 +47,7 @@ if define_own_timestamp:
 # also possible to use 3-legged token if data should be send on behalf of
 # specific user. For more details regarding Authentication service check
 # documentation on APS Portal (https://aps.autodesk.com/en/docs/oauth/v2/developers_guide/overview/).
-token = create_token(CLIENT_ID, CLIENT_SECRET, ['data:read', 'data:write'])
+token = create_token(APS_CLIENT_ID, APS_CLIENT_SECRET, ['data:read', 'data:write'])
 
 # STEP 3 - Post data to Tandem
 model_id = FACILITY_URN.replace('urn:adsk.dtt:', 'urn:adsk.dtm:')

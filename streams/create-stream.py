@@ -19,8 +19,8 @@ from common.encoding import to_full_key, to_xref_key
 from common.utils import get_default_model
 
 # update values below according to your environment
-CLIENT_ID = 'YOUR_CLIENT_ID'
-CLIENT_SECRET = 'YOUR_CLIENT_SECRET'
+APS_CLIENT_ID = 'YOUR_CLIENT_ID'
+APS_CLIENT_SECRET = 'YOUR_CLIENT_SECRET'
 FACILITY_URN = 'YOUR_FACILITY_URN'
 
 # Use room name based on your facility
@@ -31,7 +31,7 @@ CLASSIFICATION_ID = '3d'
 # Start
 # STEP 1 - obtain token. The sample uses 2-legged token but it would also work
 # with 3-legged token assuming that user has access to the facility
-token = create_token(CLIENT_ID, CLIENT_SECRET, ['data:read', 'data:write'])
+token = create_token(APS_CLIENT_ID, APS_CLIENT_SECRET, ['data:read', 'data:write'])
 with TandemClient(lambda: token) as client:
     # STEP 2 - get facility and default model.
     facility = client.get_facility(FACILITY_URN)

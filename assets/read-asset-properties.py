@@ -12,13 +12,13 @@ from common.constants import (
 )
 
 # update values below according to your environment
-CLIENT_ID = 'YOUR_CLIENT_ID'
-CLIENT_SECRET = 'YOUR_CLIENT_SECRET'
+APS_CLIENT_ID = 'YOUR_CLIENT_ID'
+APS_CLIENT_SECRET = 'YOUR_CLIENT_SECRET'
 FACILITY_URN = 'YOUR_FACILITY_URN'
 
 # Start
 # STEP 1 - obtain token to authenticate subsequent API calls
-token = create_token(CLIENT_ID, CLIENT_SECRET, ['data:read'])
+token = create_token(APS_CLIENT_ID, APS_CLIENT_SECRET, ['data:read'])
 with TandemClient(lambda: token) as client:
     # STEP 2 - get facility
     facility = client.get_facility(FACILITY_URN)
