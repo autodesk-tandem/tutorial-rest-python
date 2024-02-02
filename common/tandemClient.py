@@ -1,4 +1,4 @@
-from typing import Any, List
+from typing import Any, Dict, List
 import requests
 
 from .constants import (
@@ -173,6 +173,44 @@ class TandemClient:
                 results.append(elem)
         return results
     
+    def get_stream_data(self, model_id: str, key: str, from_date: int | None = None, to_date: int | None = None) -> Any:
+        """
+        Returns data for given stream. It can be used to get data for given time range (from, to).
+        """
+    
+        token = self.__authProvider()
+        endpoint = f'timeseries/models/{model_id}/streams/{key}';
+        search_params = {}
+        if from_date is not None:
+            search_params['from'] = from_date
+        if to_date is not None:
+            search_params['to'] = to_date
+        result = self.__get(token, endpoint, search_params)
+        return result
+
+    def get_streams(self, model_id: str, column_families: List[str] = [ COLUMN_FAMILIES_STANDARD ]) -> Any:
+        """
+        Returns stream elements from given model.
+        """
+        
+        token = self.__authProvider()
+        endpoint = f'modeldata/{model_id}/scan'
+        inputs = {
+            'families': column_families,
+            'includeHistory': False,
+            'skipArrays': True
+        }
+        data = self.__post(token, endpoint, inputs)
+        results = []
+
+        for elem in data:
+            if elem == 'v1':
+                continue
+            flags = elem.get(QC_ELEMENT_FLAGS)
+            if flags == ELEMENT_FLAGS_STREAM:
+                results.append(elem)
+        return results
+    
     def get_tagged_assets(self, model_id: str) -> Any:
         """
         Returns list of tagged assets from given model.
@@ -201,29 +239,6 @@ class TandemClient:
                 if k.startswith('z:'):
                     custom_props.append(k)
             if len(custom_props) > 0:
-                results.append(elem)
-        return results
-    
-    def get_streams(self, model_id: str, column_families: List[str] = [ COLUMN_FAMILIES_STANDARD ]) -> Any:
-        """
-        Returns stream elements from given model.
-        """
-        
-        token = self.__authProvider()
-        endpoint = f'modeldata/{model_id}/scan'
-        inputs = {
-            'families': column_families,
-            'includeHistory': False,
-            'skipArrays': True
-        }
-        data = self.__post(token, endpoint, inputs)
-        results = []
-
-        for elem in data:
-            if elem == 'v1':
-                continue
-            flags = elem.get(QC_ELEMENT_FLAGS)
-            if flags == ELEMENT_FLAGS_STREAM:
                 results.append(elem)
         return results
     
@@ -256,12 +271,12 @@ class TandemClient:
         self.__post(token, endpoint, inputs)
         return
     
-    def __get(self, token: str, endpoint: str) -> Any:
+    def __get(self, token: str, endpoint: str, params: Dict[str, Any] | None = None) -> Any:
         headers = {
             'Authorization': f'Bearer {token}'
         }
         url = f'{self.__base_url}/{endpoint}'
-        response = requests.get(url, headers=headers)
+        response = requests.get(url, headers=headers, params=params)
         return response.json()
     
     def __post(self, token: str, endpoint: str, data: Any) -> Any:
