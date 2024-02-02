@@ -179,7 +179,7 @@ class TandemClient:
         """
     
         token = self.__authProvider()
-        endpoint = f'timeseries/models/{model_id}/streams/{key}';
+        endpoint = f'timeseries/models/{model_id}/streams/{key}'
         search_params = {}
         if from_date is not None:
             search_params['from'] = from_date
@@ -188,6 +188,19 @@ class TandemClient:
         result = self.__get(token, endpoint, search_params)
         return result
 
+    def get_stream_secrets(self, model_id: str, keys: List[str]) -> Any:
+        """
+        Returns secrets for streams.
+        """
+
+        token = self.__authProvider()
+        endpoint = f'models/{model_id}/getstreamssecrets'
+        inputs = {
+            'keys': keys
+        }
+        result = self.__post(token, endpoint, inputs)
+        return result
+    
     def get_streams(self, model_id: str, column_families: List[str] = [ COLUMN_FAMILIES_STANDARD ]) -> Any:
         """
         Returns stream elements from given model.
