@@ -5,9 +5,19 @@ from .constants import (
     COLUMN_FAMILIES_DTPROPERTIES,
     COLUMN_FAMILIES_REFS,
     COLUMN_FAMILIES_STANDARD,
+    COLUMN_FAMILIES_XREFS,
+    COLUMN_NAMES_CATEGORY_ID,
+    COLUMN_NAMES_CLASSIFICATION,
+    COLUMN_NAMES_ELEMENT_FLAGS,
+    COLUMN_NAMES_LEVEL,
+    COLUMN_NAMES_NAME,
+    COLUMN_NAMES_PARENT,
+    COLUMN_NAMES_ROOM,
+    COLUMN_NAMES_UNIFORMAT_CLASS,
     ELEMENT_FLAGS_LEVEL,
     ELEMENT_FLAGS_ROOM,
     ELEMENT_FLAGS_STREAM,
+    MUTATE_ACTIONS_INSERT,
     QC_ELEMENT_FLAGS
 )
 
@@ -28,6 +38,42 @@ class TandemClient:
     
     def __exit__(self, *args: any)-> None:
         pass
+
+    def create_stream(self,
+                      model_id: str,
+                      name: str,
+                      uniformat_class_id: str,
+                      category_id: str,
+                      classification: str | None = None,
+                      parent_xref: str | None = None,
+                      room_xref: str | None = None,
+                      level_key: str | None = None) -> str:
+        """
+        Creates new stream using provided data.
+        """
+        
+        token = self.__authProvider()
+        endpoint = f'modeldata/{model_id}/create'
+        inputs = {
+            'muts': [
+                [ MUTATE_ACTIONS_INSERT, COLUMN_FAMILIES_STANDARD, COLUMN_NAMES_NAME, name ],
+                [ MUTATE_ACTIONS_INSERT, COLUMN_FAMILIES_STANDARD, COLUMN_NAMES_ELEMENT_FLAGS, ELEMENT_FLAGS_STREAM ],
+                [ MUTATE_ACTIONS_INSERT, COLUMN_FAMILIES_STANDARD, COLUMN_NAMES_UNIFORMAT_CLASS, uniformat_class_id ],
+                [ MUTATE_ACTIONS_INSERT, COLUMN_FAMILIES_STANDARD, COLUMN_NAMES_CATEGORY_ID, category_id ]
+            ],
+            'desc': 'Create stream'
+        }
+
+        if classification is not None:
+            inputs['muts'].append([ MUTATE_ACTIONS_INSERT, COLUMN_FAMILIES_STANDARD, COLUMN_NAMES_CLASSIFICATION, classification ])
+        if parent_xref is not None:
+            inputs['muts'].append([ MUTATE_ACTIONS_INSERT, COLUMN_FAMILIES_XREFS, COLUMN_NAMES_PARENT, parent_xref ])
+        if room_xref is not None:
+            inputs['muts'].append([ MUTATE_ACTIONS_INSERT, COLUMN_FAMILIES_XREFS, COLUMN_NAMES_ROOM, room_xref ])
+        if level_key is not None:
+            inputs['muts'].append([ MUTATE_ACTIONS_INSERT, COLUMN_FAMILIES_REFS, COLUMN_NAMES_LEVEL, level_key ])
+        response = self.__post(token, endpoint, inputs)
+        return response.get('key')
 
     def get_element(self, model_id: str, key: str, column_families: List[str] = [ COLUMN_FAMILIES_STANDARD ]) -> Any:
         """
@@ -195,6 +241,20 @@ class TandemClient:
         }
         result = self.__post(token, endpoint, inputs)
         return result
+    
+    def reset_stream_secrets(self, model_id, stream_ids: List[str], hard_reset: bool = False) -> None:
+        """
+        Resets secrets for given streams.
+        """
+        
+        token = self.__authProvider()
+        endpoint = f'models/{model_id}/resetstreamssecrets'
+        inputs = {
+            'keys': stream_ids,
+            'hardReset': hard_reset
+        }
+        self.__post(token, endpoint, inputs)
+        return
     
     def __get(self, token: str, endpoint: str) -> Any:
         headers = {
