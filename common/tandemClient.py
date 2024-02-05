@@ -12,7 +12,7 @@ from .constants import (
     COLUMN_NAMES_LEVEL,
     COLUMN_NAMES_NAME,
     COLUMN_NAMES_PARENT,
-    COLUMN_NAMES_ROOM,
+    COLUMN_NAMES_ROOMS,
     COLUMN_NAMES_UNIFORMAT_CLASS,
     ELEMENT_FLAGS_LEVEL,
     ELEMENT_FLAGS_ROOM,
@@ -69,7 +69,7 @@ class TandemClient:
         if parent_xref is not None:
             inputs['muts'].append([ MUTATE_ACTIONS_INSERT, COLUMN_FAMILIES_XREFS, COLUMN_NAMES_PARENT, parent_xref ])
         if room_xref is not None:
-            inputs['muts'].append([ MUTATE_ACTIONS_INSERT, COLUMN_FAMILIES_XREFS, COLUMN_NAMES_ROOM, room_xref ])
+            inputs['muts'].append([ MUTATE_ACTIONS_INSERT, COLUMN_FAMILIES_XREFS, COLUMN_NAMES_ROOMS, room_xref ])
         if level_key is not None:
             inputs['muts'].append([ MUTATE_ACTIONS_INSERT, COLUMN_FAMILIES_REFS, COLUMN_NAMES_LEVEL, level_key ])
         response = self.__post(token, endpoint, inputs)
