@@ -1,6 +1,6 @@
 import base64
 import struct
-from typing import Tuple
+from typing import List, Tuple
 
 from .constants import (
     ELEMENT_FLAGS_SIZE,
@@ -23,6 +23,35 @@ def decode_xref_key(key: str) -> Tuple[str, str]:
     key_buff[0:] = buff[MODEL_ID_SIZE:]
     element_key = __make_web_safe(base64.b64encode(key_buff).decode('utf-8'))
     return model_id, element_key
+
+def from_short_key_array(text: str, use_full_keys: bool = False, is_logical: bool = False) -> List[str]:
+    """
+    Decodes text (local refs) to list of keys. If use_full_keys is set to True then full
+    keys are returned. If is_logical is set to True then logical keys are
+    returned.
+    """
+
+    text = __b64_prepare(text)
+    bin_data = base64.b64decode(text)
+    buff = bytearray(ELEMENT_ID_SIZE)
+    if use_full_keys:
+        buff = bytearray(ELEMENT_ID_WITH_FLAGS_SIZE)
+    result = []
+    offset = 0
+    while offset < len(bin_data):
+        size = len(bin_data) - offset
+        if size < ELEMENT_ID_SIZE:
+            break
+        if use_full_keys:
+            flags_value = KEY_FLAGS_LOGICAL if is_logical else KEY_FLAGS_PHYSICAL
+            struct.pack_into('>I', buff, 0, flags_value)
+            buff[ELEMENT_FLAGS_SIZE:] = bin_data[offset:offset + ELEMENT_ID_SIZE]
+        else:
+            buff[0:] = bin_data[offset:offset + ELEMENT_ID_SIZE]
+        element_key = __make_web_safe(base64.b64encode(buff).decode('utf-8'))
+        result.append(element_key)
+        offset += ELEMENT_ID_SIZE
+    return result
 
 def to_element_GUID(key: str) -> str:
     """ Converts element key to Revit GUID. Works for both short and full key. Note: It works only for models imported from Revit."""
