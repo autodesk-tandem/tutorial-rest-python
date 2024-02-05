@@ -15,7 +15,7 @@ def decode_xref_key(key: str) -> Tuple[str, str]:
     """ Decodes xref key to model id and element key."""
 
     txt = __b64_prepare(key)
-    buff = bytearray(base64.b64decode(txt))
+    buff = base64.b64decode(txt)
     model_buff = bytearray(MODEL_ID_SIZE)
     model_buff[0:] = buff[0:MODEL_ID_SIZE]
     model_id = __make_web_safe(base64.b64encode(model_buff).decode('utf-8'))
@@ -28,7 +28,7 @@ def to_element_GUID(key: str) -> str:
     """ Converts element key to Revit GUID. Works for both short and full key. Note: It works only for models imported from Revit."""
 
     txt = __b64_prepare(key)
-    buff = bytearray(base64.b64decode(txt))
+    buff = base64.b64decode(txt)
     if len(buff) == ELEMENT_ID_WITH_FLAGS_SIZE:
         del buff[0:4]
     hex = [f'{b:02x}' for b in buff]
