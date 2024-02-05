@@ -255,6 +255,16 @@ class TandemClient:
                 results.append(elem)
         return results
     
+    def get_views(self, facility_id: str) -> Any:
+        """
+        Returns list of views for given facility.
+        """
+        
+        token = self.__authProvider()
+        endpoint = f'twins/{facility_id}/views'
+        result = self.__get(token, endpoint)
+        return result
+    
     def mutate_elements(self, model_id: str, keys: List[str], mutations, description: str) -> Any:
         """
         Modifies given elements.
