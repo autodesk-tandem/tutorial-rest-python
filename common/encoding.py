@@ -8,7 +8,8 @@ from .constants import (
     ELEMENT_ID_WITH_FLAGS_SIZE,
     KEY_FLAGS_LOGICAL,
     KEY_FLAGS_PHYSICAL,
-    MODEL_ID_SIZE
+    MODEL_ID_SIZE,
+    SYSTEM_ID_SIZE
 )
 
 def decode_xref_key(key: str) -> Tuple[str, str]:
@@ -91,6 +92,27 @@ def to_short_key(full_key: str) -> str:
     key[0:] = buff[ELEMENT_FLAGS_SIZE:]
     return __make_web_safe(base64.b64encode(key).decode('utf-8'))
 
+def to_system_id(key: str) -> str:
+    """
+    Converts element key to system id.
+    """
+    
+    buff = base64.b64decode(__b64_prepare(key))
+    id = buff[-4] << 24
+    id |= buff[-3] << 16
+    id |= buff[-2] << 8
+    id |= buff[-1]
+    res = bytearray(SYSTEM_ID_SIZE)
+    offset  = [0]
+
+    len = __write_var_int(res, offset, id)
+    tmp = bytearray(len)
+    tmp[0:] = res[0:len]
+    text = base64.b64encode(tmp).decode('utf-8')
+    text = text.replace('=','')
+    return text
+    
+
 def to_xref_key(model_id: str, key: str) -> str:
     """ Converts model id and element key to xref key."""
 
@@ -112,3 +134,19 @@ def __make_web_safe(text: str) -> str:
     result = result.replace('/', '_')
     result = result.rstrip('=')
     return result
+
+def __write_var_int(buff, offset, value):
+    start_offset = offset[0]
+
+    while True:
+        byte = 0 | (value & 0x7f)
+
+        value >>= 7
+        value &= 0xffffffff
+        if value != 0:
+            byte |= 0x80
+        buff[offset[0]] = byte
+        offset[0] += 1
+        if not value:
+            break
+    return offset[0] - start_offset
