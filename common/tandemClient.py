@@ -118,6 +118,16 @@ class TandemClient:
         endpoint = f'twins/{facility_id}/inlinetemplate'
         return self.__get(token, endpoint)
     
+    def get_group(self, group_id: str) -> Any:
+        """
+        Returns group details.
+        """
+        
+        token = self.__authProvider()
+        endpoint = f'groups/{group_id}'
+        result = self.__get(token, endpoint)
+        return result
+    
     def get_groups(self) -> Any:
         """
         Returns list of groups.
