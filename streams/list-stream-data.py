@@ -1,7 +1,7 @@
 """
 This example demonstrates how to get streams from given facility and read their data.
 
-It uses 2-legged authentication - this requires athat application is added to facility as service.
+It uses 2-legged authentication - this requires that application is added to facility as service.
 """
 
 from time import localtime, strftime, time

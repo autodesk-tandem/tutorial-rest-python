@@ -2,7 +2,7 @@
 This example demonstrates how to create stream using REST API. The stream
 is assigned to specified room.
 
-It uses 2-legged authentication - this requires athat application is added
+It uses 2-legged authentication - this requires that application is added
 to facility as service.
 """
 

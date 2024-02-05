@@ -1,7 +1,7 @@
 """
 This example demonstrates how to list all levels from facility.
 
-It uses 2-legged authentication - this requires athat application is added to facility as service.
+It uses 2-legged authentication - this requires that application is added to facility as service.
 """
 
 from common.auth import create_token

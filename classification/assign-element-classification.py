@@ -4,7 +4,7 @@ The scenario is quite simple - there is hardcoded mapping between element name
 and classification. I can be used as reference sample in case that more
 advanced logic is needed.
 
-It uses 2-legged authentication - this requires athat application is added to facility as service.
+It uses 2-legged authentication - this requires that application is added to facility as service.
 """
 
 from common.auth import create_token
