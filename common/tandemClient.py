@@ -118,6 +118,16 @@ class TandemClient:
         endpoint = f'twins/{facility_id}/inlinetemplate'
         return self.__get(token, endpoint)
     
+    def get_groups(self) -> Any:
+        """
+        Returns list of groups.
+        """
+        
+        token = self.__authProvider()
+        endpoint = f'groups'
+        result = self.__get(token, endpoint)
+        return result
+    
     def get_levels(self, model_id: str, column_families: List[str] = [ COLUMN_FAMILIES_STANDARD ]) -> Any:
         """
         Returns level elements from given model.
