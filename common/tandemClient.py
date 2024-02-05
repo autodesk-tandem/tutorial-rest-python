@@ -17,6 +17,7 @@ from .constants import (
     ELEMENT_FLAGS_LEVEL,
     ELEMENT_FLAGS_ROOM,
     ELEMENT_FLAGS_STREAM,
+    ELEMENT_FLAGS_SYSTEM,
     MUTATE_ACTIONS_INSERT,
     QC_ELEMENT_FLAGS
 )
@@ -241,6 +242,29 @@ class TandemClient:
                 continue
             flags = elem.get(QC_ELEMENT_FLAGS)
             if flags == ELEMENT_FLAGS_STREAM:
+                results.append(elem)
+        return results
+    
+    def get_systems(self, model_id: str, column_families: List[str] = [ COLUMN_FAMILIES_STANDARD ]) -> Any:
+        """
+        Returns system elements from given model.
+        """
+        
+        token = self.__authProvider()
+        endpoint = f'modeldata/{model_id}/scan'
+        inputs = {
+            'families': column_families,
+            'includeHistory': False,
+            'skipArrays': True
+        };
+        data = self.__post(token, endpoint, inputs)
+        results = []
+
+        for elem in data:
+            if elem == 'v1':
+                continue
+            flags = elem.get(QC_ELEMENT_FLAGS)
+            if flags == ELEMENT_FLAGS_SYSTEM:
                 results.append(elem)
         return results
     
