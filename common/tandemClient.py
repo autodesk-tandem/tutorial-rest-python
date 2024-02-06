@@ -40,6 +40,16 @@ class TandemClient:
     def __exit__(self, *args: any)-> None:
         pass
 
+    def create_documents(self, facility_id: str, doc_inputs: List[Any]) -> Any:
+        """"
+        Adds documents to the facility.
+        """
+
+        token = self.__authProvider()
+        endpoint = f'twins/{facility_id}/documents'
+        response = self.__post(token, endpoint, doc_inputs)
+        return response
+
     def create_stream(self,
                       model_id: str,
                       name: str,
