@@ -338,6 +338,20 @@ class TandemClient:
         self.__post(token, endpoint, inputs)
         return
     
+    def save_document_content(self, url: str, file_path: str) -> None:
+        """"
+        Downloads document to local file.
+        """
+
+        token = self.__authProvider()
+        headers = {
+            'Authorization': f'Bearer {token}'
+        }
+        response = requests.get(url, headers=headers)
+        with open(file_path, 'wb') as file:
+            file.write(response.content)
+        return
+    
     def __get(self, token: str, endpoint: str, params: Dict[str, Any] | None = None) -> Any:
         headers = {
             'Authorization': f'Bearer {token}'
