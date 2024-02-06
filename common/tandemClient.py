@@ -94,7 +94,7 @@ class TandemClient:
         data = self.get_elements(model_id, [ key ], column_families)
         return data[0]
 
-    def get_elements(self, model_id: str, element_ids: List[str] | None = None, column_families: List[str] = [ COLUMN_FAMILIES_STANDARD ]) -> Any:
+    def get_elements(self, model_id: str, element_ids: List[str] | None = None, column_families: List[str] = [ COLUMN_FAMILIES_STANDARD ], include_history: bool = False) -> Any:
         """
         Returns list of elements for given model.
         """
@@ -103,7 +103,7 @@ class TandemClient:
         endpoint = f'modeldata/{model_id}/scan'
         inputs = {
             'families': column_families,
-            'includeHistory': False,
+            'includeHistory': include_history,
             'skipArrays': True
         }
         if element_ids is not None and len(element_ids) > 0:
