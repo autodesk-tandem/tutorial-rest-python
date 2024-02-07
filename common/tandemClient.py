@@ -172,9 +172,24 @@ class TandemClient:
                 results.append(elem)
         return results
     
-    def get_model_history_between_dates(self, model_id: str, from_date: int, to_date: int, include_changes: bool = True, use_full_keys: bool = True):
+    def get_model_history(self, model_id: str, timestamps: List[int], include_changes: bool = False, use_full_keys: bool = False):
         """
         Returns model changes.
+        """
+        
+        token = self.__authProvider()
+        endpoint = f'modeldata/{model_id}/history'
+        inputs = {
+            'timestamps': timestamps,
+            'includeChanges': include_changes,
+            'useFullKeys': use_full_keys
+        }
+        response = self.__post(token, endpoint, inputs)
+        return response
+    
+    def get_model_history_between_dates(self, model_id: str, from_date: int, to_date: int, include_changes: bool = True, use_full_keys: bool = True):
+        """
+        Returns model changes between two dates.
         """
         
         token = self.__authProvider()
