@@ -294,7 +294,9 @@ class TandemClient:
                 results.append(elem)
         return results
     
-    def get_tagged_assets(self, model_id: str) -> Any:
+    def get_tagged_assets(self, model_id: str,
+                          column_families: List[str] = [ COLUMN_FAMILIES_STANDARD, COLUMN_FAMILIES_DTPROPERTIES, COLUMN_FAMILIES_REFS ],
+                          include_history: bool = False) -> Any:
         """
         Returns list of tagged assets from given model.
         """
@@ -302,11 +304,8 @@ class TandemClient:
         token = self.__authProvider()
         endpoint = f'modeldata/{model_id}/scan'
         inputs = {
-            'families': [
-                COLUMN_FAMILIES_STANDARD,
-                COLUMN_FAMILIES_DTPROPERTIES,
-                COLUMN_FAMILIES_REFS ],
-            'includeHistory': False,
+            'families': column_families,
+            'includeHistory': include_history,
             'skipArrays': True
         }
         data = self.__post(token, endpoint, inputs)
