@@ -54,6 +54,27 @@ def from_short_key_array(text: str, use_full_keys: bool = False, is_logical: boo
         offset += ELEMENT_ID_SIZE
     return result
 
+def from_xref_key_array(text: str) -> List[Tuple[str, str]]:
+    """ Decodes text (xref refs) to list of model id and element key tuples."""
+
+    if text is None:
+        return []
+    text = __b64_prepare(text)
+    bin_data = base64.b64decode(text)
+    buff = bytearray(MODEL_ID_SIZE + ELEMENT_ID_WITH_FLAGS_SIZE)
+    result = []
+    offset = 0
+    while offset < len(bin_data):
+        size = len(bin_data) - offset
+        if size < MODEL_ID_SIZE + ELEMENT_ID_WITH_FLAGS_SIZE:
+            break
+        buff[0:] = bin_data[offset:offset + MODEL_ID_SIZE + ELEMENT_ID_WITH_FLAGS_SIZE]
+        model_id = __make_web_safe(base64.b64encode(buff[0:MODEL_ID_SIZE]).decode('utf-8'))
+        element_key = __make_web_safe(base64.b64encode(buff[MODEL_ID_SIZE:]).decode('utf-8'))
+        result.append((model_id, element_key))
+        offset += MODEL_ID_SIZE + ELEMENT_ID_WITH_FLAGS_SIZE
+    return result
+
 def to_element_GUID(key: str) -> str:
     """ Converts element key to Revit GUID. Works for both short and full key. Note: It works only for models imported from Revit."""
 
