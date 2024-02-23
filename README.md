@@ -1,4 +1,4 @@
-# Autodesk Tandem Data REST API - Tutorials
+# Autodesk Tandem Data REST API - Tutorials (Python)
 This repository contains various examples of how to use the Autodesk Tandem Data REST API to achieve certain workflows. These are reference implementations that can be adopted for specific scenarios.
 
 ## Prequisities
