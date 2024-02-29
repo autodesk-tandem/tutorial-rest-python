@@ -9,7 +9,8 @@ from common.tandemClient import TandemClient
 from common.constants import (
     QC_KEY,
     QC_FAMILY_TYPE,
-    QC_NAME
+    QC_NAME,
+    QC_ONAME
 )
 
 # update values below according to your environment
@@ -47,5 +48,5 @@ with TandemClient(lambda: token) as client:
                 continue
             # STEP 6 - print out asset name & asset type name
             asset_type = next(a for a in asset_types if a[QC_KEY] == asset_type_id)
-
-            print(f'{asset[QC_NAME]}: {asset_type[QC_NAME]}')
+            asset_name = asset.get(QC_ONAME) or asset.get(QC_NAME)
+            print(f'{asset_name}: {asset_type.get(QC_NAME)}')

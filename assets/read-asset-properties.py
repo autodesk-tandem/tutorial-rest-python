@@ -8,7 +8,8 @@ from common.auth import create_token
 from common.tandemClient import TandemClient
 from common.constants import (
     QC_KEY,
-    QC_NAME
+    QC_NAME,
+    QC_ONAME
 )
 
 # update values below according to your environment
@@ -29,8 +30,8 @@ with TandemClient(lambda: token) as client:
         assets = client.get_tagged_assets(model_id)
         for asset in assets:
             # STEP 4 - map properties to schema and print out property name & value
-            name = asset[QC_NAME]
-            key = asset[QC_KEY]
+            name = asset.get(QC_ONAME) or asset.get(QC_NAME)
+            key = asset.get(QC_KEY)
             print(f'{name}: {key}')
             for prop_id in asset.keys():
                 prop = next(p for p in schema.get('attributes') if p['id'] == prop_id)
