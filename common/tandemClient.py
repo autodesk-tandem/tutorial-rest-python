@@ -85,6 +85,30 @@ class TandemClient:
             inputs['muts'].append([ MUTATE_ACTIONS_INSERT, COLUMN_FAMILIES_REFS, COLUMN_NAMES_LEVEL, level_key ])
         response = self.__post(token, endpoint, inputs)
         return response.get('key')
+    
+    def delete_stream_data(self, model_id: str, keys: List[str], substreams: List[str] | None = None, from_date: str | None = None, to_date: str | None = None) -> None:
+        """
+        Deletes data from given streams. It can be used to delete specified substreams or all data from give streams.
+        It's also possible to delete data for given time range (from, to).
+        """
+
+        token = self.__authProvider()
+        endpoint = f'timeseries/models/{model_id}/deletestreamsdata'
+        inputs = {
+            'keys': keys
+        }
+        query_params = {
+        }
+        if substreams is not None:
+            query_params['substreams'] = ','.join(substreams)
+        if from_date is not None:
+            query_params['from'] = from_date
+        if to_date is not None:
+            query_params['to'] = to_date
+        # if there are no input parameters, then delete all stream data
+        if len(query_params) == 0:
+            query_params['allSubstreams'] = 1
+        self.__post(token, endpoint, inputs, query_params)
 
     def get_element(self, model_id: str, key: str, column_families: List[str] = [ COLUMN_FAMILIES_STANDARD ]) -> Any:
         """
@@ -400,13 +424,13 @@ class TandemClient:
         response = requests.get(url, headers=headers, params=params)
         return response.json()
     
-    def __post(self, token: str, endpoint: str, data: Any) -> Any:
+    def __post(self, token: str, endpoint: str, data: Any, params: Dict[str, Any] | None = None) -> Any:
         headers = {
             'Authorization': f'Bearer {token}',
             'Content-Type': 'application/json',
         }
         url = f'{self.__base_url}/{endpoint}'
-        response = requests.post(url, headers=headers, json=data)
+        response = requests.post(url, headers=headers, json=data, params=params)
         if response.status_code == 204:
             return
         return response.json()
