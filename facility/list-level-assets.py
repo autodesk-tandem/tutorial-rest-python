@@ -17,29 +17,34 @@ APS_CLIENT_ID = 'YOUR_CLIENT_ID'
 APS_CLIENT_SECRET = 'YOUR_CLIENT_SECRET'
 FACILITY_URN = 'YOUR_FACILITY_URN'
 
-# Start
-# STEP 1 - obtain token. The sample uses 2-legged token but it would also work
-# with 3-legged token assuming that user has access to the facility
-token = create_token(APS_CLIENT_ID, APS_CLIENT_SECRET, ['data:read'])
-with TandemClient(lambda: token) as client:
-    # STEP 2 - get facility
-    facility = client.get_facility(FACILITY_URN)
-    # STEP 3 - iterate through facility models
-    for l in facility.get('links'):
-        model_id = l.get('modelId')
-        levels = client.get_levels(model_id)
-        assets = client.get_tagged_assets(model_id)
-        # STEP 4 - iterate through levels
-        for level in levels:
-            print(f'{level.get(QC_NAME)}')
-            # STEP 5 - iterate through assets
-            for asset in assets:
-                asset_level = asset.get(QC_LEVEL)
+def main():
+    # Start
+    # STEP 1 - obtain token. The sample uses 2-legged token but it would also work
+    # with 3-legged token assuming that user has access to the facility
+    token = create_token(APS_CLIENT_ID, APS_CLIENT_SECRET, ['data:read'])
+    with TandemClient(lambda: token) as client:
+        # STEP 2 - get facility
+        facility = client.get_facility(FACILITY_URN)
+        # STEP 3 - iterate through facility models
+        for l in facility.get('links'):
+            model_id = l.get('modelId')
+            levels = client.get_levels(model_id)
+            assets = client.get_tagged_assets(model_id)
+            # STEP 4 - iterate through levels
+            for level in levels:
+                print(f'{level.get(QC_NAME)}')
+                # STEP 5 - iterate through assets
+                for asset in assets:
+                    asset_level = asset.get(QC_LEVEL)
 
-                if asset_level is None:
-                    continue
-                # STEP 6 - compare key with level key of an asset
-                # if level key is matching to current level then we print out
-                # asset name.
-                if level.get(QC_KEY) == asset_level:
-                    print(f'  {asset.get(QC_NAME)}')
+                    if asset_level is None:
+                        continue
+                    # STEP 6 - compare key with level key of an asset
+                    # if level key is matching to current level then we print out
+                    # asset name.
+                    if level.get(QC_KEY) == asset_level:
+                        print(f'  {asset.get(QC_NAME)}')
+
+
+if __name__ == '__main__':
+    main()

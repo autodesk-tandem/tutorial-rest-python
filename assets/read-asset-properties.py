@@ -17,24 +17,29 @@ APS_CLIENT_ID = 'YOUR_CLIENT_ID'
 APS_CLIENT_SECRET = 'YOUR_CLIENT_SECRET'
 FACILITY_URN = 'YOUR_FACILITY_URN'
 
-# Start
-# STEP 1 - obtain token to authenticate subsequent API calls
-token = create_token(APS_CLIENT_ID, APS_CLIENT_SECRET, ['data:read'])
-with TandemClient(lambda: token) as client:
-    # STEP 2 - get facility
-    facility = client.get_facility(FACILITY_URN)
-    # STEP 3 - iterate through facility models and collect tagged assets
-    for l in facility.get('links'):
-        model_id = l.get('modelId')
-        schema = client.get_model_schema(model_id)
-        assets = client.get_tagged_assets(model_id)
-        for asset in assets:
-            # STEP 4 - map properties to schema and print out property name & value
-            name = asset.get(QC_ONAME) or asset.get(QC_NAME)
-            key = asset.get(QC_KEY)
-            print(f'{name}: {key}')
-            for prop_id in asset.keys():
-                prop = next(p for p in schema.get('attributes') if p['id'] == prop_id)
-                if prop is None:
-                    continue
-                print(f'  {prop['category']}.{prop['name']}:{asset.get(prop_id)}')
+def main():
+    # Start
+    # STEP 1 - obtain token to authenticate subsequent API calls
+    token = create_token(APS_CLIENT_ID, APS_CLIENT_SECRET, ['data:read'])
+    with TandemClient(lambda: token) as client:
+        # STEP 2 - get facility
+        facility = client.get_facility(FACILITY_URN)
+        # STEP 3 - iterate through facility models and collect tagged assets
+        for l in facility.get('links'):
+            model_id = l.get('modelId')
+            schema = client.get_model_schema(model_id)
+            assets = client.get_tagged_assets(model_id)
+            for asset in assets:
+                # STEP 4 - map properties to schema and print out property name & value
+                name = asset.get(QC_ONAME) or asset.get(QC_NAME)
+                key = asset.get(QC_KEY)
+                print(f'{name}: {key}')
+                for prop_id in asset.keys():
+                    prop = next(p for p in schema.get('attributes') if p['id'] == prop_id)
+                    if prop is None:
+                        continue
+                    print(f'  {prop['category']}.{prop['name']}:{asset.get(prop_id)}')
+
+
+if __name__ == '__main__':
+    main()
