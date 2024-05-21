@@ -1,6 +1,7 @@
 import base64
+import json
 import struct
-from typing import List, Tuple
+from typing import Any, List, Tuple
 
 from .constants import (
     ELEMENT_FLAGS_SIZE,
@@ -11,6 +12,17 @@ from .constants import (
     MODEL_ID_SIZE,
     SYSTEM_ID_SIZE
 )
+
+def decode_stream_settings(text: str)-> Any:
+    """
+    Decodes stream settings from text.
+    """
+
+    txt = __b64_prepare(text)
+    settings = base64.b64decode(txt)
+    settings_obj = json.loads(settings)
+
+    return settings_obj
 
 def decode_xref_key(key: str) -> Tuple[str, str]:
     """ Decodes xref key to model id and element key."""
