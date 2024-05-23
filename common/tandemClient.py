@@ -49,6 +49,16 @@ class TandemClient:
         endpoint = f'twins/{facility_id}/documents'
         response = self.__post(token, endpoint, doc_inputs)
         return response
+    
+    def create_element(self, model_id: str, inputs: List[Any]) -> Any:
+        """"
+        Adds new element to the model.
+        """
+
+        token = self.__authProvider()
+        endpoint = f'modeldata/{model_id}/create'
+        response = self.__post(token, endpoint, inputs)
+        return response
 
     def create_stream(self,
                       model_id: str,
