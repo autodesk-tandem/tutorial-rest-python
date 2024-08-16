@@ -1,6 +1,6 @@
 """
-This example demonstrates how to create generic asset (w/o geometry).
-The facility is using REC Sample template and new asset is Lighting Equipment.
+This example demonstrates how to delete element from the model. For the simplicity the example locates element by name.
+Deleted elements can be restored using Restore function in the History panel.
 
 It uses 2-legged authentication - this requires that application is added to facility as service.
 """
