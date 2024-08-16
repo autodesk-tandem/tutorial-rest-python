@@ -18,6 +18,7 @@ from .constants import (
     ELEMENT_FLAGS_ROOM,
     ELEMENT_FLAGS_STREAM,
     ELEMENT_FLAGS_SYSTEM,
+    MUTATE_ACTIONS_DELETE_ROW,
     MUTATE_ACTIONS_INSERT,
     QC_ELEMENT_FLAGS
 )
@@ -95,6 +96,17 @@ class TandemClient:
             inputs['muts'].append([ MUTATE_ACTIONS_INSERT, COLUMN_FAMILIES_REFS, COLUMN_NAMES_LEVEL, level_key ])
         response = self.__post(token, endpoint, inputs)
         return response.get('key')
+    
+    def delete_elements(self, model_id: str, keys: List[str], desc: str):
+        """
+        Deletes given elements from the model.
+        """
+
+        mutations = []
+        mutations.extend([ MUTATE_ACTIONS_DELETE_ROW, '', '', '' ] for key in keys)
+        result = self.mutate_elements(model_id, keys, mutations, desc)
+
+        return result
     
     def delete_stream_data(self, model_id: str, keys: List[str], substreams: List[str] | None = None, from_date: str | None = None, to_date: str | None = None) -> None:
         """
