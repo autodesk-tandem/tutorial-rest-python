@@ -7,7 +7,6 @@ It uses 2-legged authentication - this requires that application is added to fac
 
 from common.auth import create_token
 from common.tandemClient import TandemClient
-from common.utils import get_default_model, match_classification
 from common.constants import (
     QC_KEY,
     QC_NAME,
