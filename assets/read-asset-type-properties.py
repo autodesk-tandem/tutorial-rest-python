@@ -28,7 +28,6 @@ def main():
         # STEP 3 - iterate through facility models and collect tagged assets
         for l in facility.get('links'):
             model_id = l.get('modelId')
-            schema = client.get_model_schema(model_id)
             assets = client.get_tagged_assets(model_id)
             asset_type_ids = set()
             asset_type_map = {}
@@ -48,7 +47,7 @@ def main():
                 if asset_type_id is None:
                     continue
                 # STEP 6 - print out asset name & asset type name
-                asset_type = next(a for a in asset_types if a[QC_KEY] == asset_type_id)
+                asset_type = next((a for a in asset_types if a[QC_KEY] == asset_type_id), None)
                 asset_name = asset.get(QC_ONAME) or asset.get(QC_NAME)
                 print(f'{asset_name}: {asset_type.get(QC_NAME)}')
 

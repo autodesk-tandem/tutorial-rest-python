@@ -43,7 +43,7 @@ def main():
         class_map = {}
         for name in element_class_map.keys():
             class_name = element_class_map[name]
-            class_data = next(c for c in facility_template['classification']['rows'] if c[1] == class_name)
+            class_data = next((c for c in facility_template['classification']['rows'] if c[1] == class_name), None)
             if class_data is None:
                 continue
             class_map[name] = class_data[0]

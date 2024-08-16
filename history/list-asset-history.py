@@ -65,7 +65,7 @@ def main():
                     props = asset.get(prop)
                     if not isinstance(props, list):
                         continue
-                    prop_def = next(p for p in schema.get('attributes') if p.get('id') == prop)
+                    prop_def = next((p for p in schema.get('attributes') if p.get('id') == prop), None)
                     if prop_def is None:
                         continue
                     print(f'  {prop_def.get('category')}:{prop_def.get('name')}')
@@ -74,7 +74,7 @@ def main():
                         ts = props[i + 1]
 
                         # find change details using timestamp
-                        history_item = next(i for i in history if i.get('t') == ts)
+                        history_item = next((i for i in history if i.get('t') == ts), None)
                         if history_item is None:
                             continue
                         print(f'    {strftime('%Y-%m-%d %H:%M:%S', localtime(ts * 0.001))}:{value} {history_item.get('n', 'NA')}')

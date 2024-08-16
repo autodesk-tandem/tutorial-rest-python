@@ -76,7 +76,7 @@ def main():
                     props = element.get(prop)
                     if not isinstance(props, list):
                         continue
-                    prop_def = next(filter(lambda item: item.get('id') == prop, schema.get('attributes')))
+                    prop_def = next(filter(lambda item: item.get('id') == prop, schema.get('attributes')), None)
                     if prop_def is None:
                         continue
                     for i in range(len(props))[::2]:
@@ -86,7 +86,7 @@ def main():
                         if not ts in timestamps:
                             continue
                         # find change details using timestamp
-                        history_item = next(i for i in history if i.get('t') == ts)
+                        history_item = next((i for i in history if i.get('t') == ts), None)
                         print(f'    {prop_def.get('category')}:{prop_def.get('name')}')
                         print(f'      {strftime('%Y-%m-%d %H:%M:%S', localtime(ts * 0.001))}:{value} {history_item.get('n', 'NA')}')
 

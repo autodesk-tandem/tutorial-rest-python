@@ -31,7 +31,7 @@ def main():
             levels = client.get_levels(model_id)
             for level in levels:
                 # STEP 4 - find elevation property
-                prop_def = next(p for p in schema.get('attributes') if p.get('id') == QC_ELEVATION)
+                prop_def = next((p for p in schema.get('attributes') if p.get('id') == QC_ELEVATION), None)
                 if prop_def is None:
                     continue
                 elevation = level.get(prop_def.get('id'))

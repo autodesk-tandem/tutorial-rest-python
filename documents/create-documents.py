@@ -42,10 +42,10 @@ def main():
 
         for name, id, version in docs:
             # STEP 4 - filter out documents which are already imported into facility
-            doc = next(d for d in facility.get('docs') if d.get('accAccountId') == ACC_ACCOUNT_ID
+            doc = next((d for d in facility.get('docs') if d.get('accAccountId') == ACC_ACCOUNT_ID
                         and d.get('accProjectId') == ACC_PROJECT_ID
                         and d.get('accLineage') == id
-                        and d.get('accVersion') == version)
+                        and d.get('accVersion') == version), None)
             if doc is not None:
                 continue
             doc_inputs.append({

@@ -35,7 +35,7 @@ def main():
                 key = asset.get(QC_KEY)
                 print(f'{name}: {key}')
                 for prop_id in asset.keys():
-                    prop = next(p for p in schema.get('attributes') if p['id'] == prop_id)
+                    prop = next((p for p in schema.get('attributes') if p['id'] == prop_id), None)
                     if prop is None:
                         continue
                     print(f'  {prop['category']}.{prop['name']}:{asset.get(prop_id)}')

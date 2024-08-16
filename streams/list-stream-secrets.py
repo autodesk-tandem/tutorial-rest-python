@@ -41,7 +41,7 @@ def main():
             # stream data are stored using short key
             stream_key = to_short_key(key)
             stream_secret = data.get(key)
-            stream = next(s for s in streams if s.get(QC_KEY) == stream_key)
+            stream = next((s for s in streams if s.get(QC_KEY) == stream_key), None)
             print(f'{stream.get(QC_NAME)}: {stream_secret}')
 
 

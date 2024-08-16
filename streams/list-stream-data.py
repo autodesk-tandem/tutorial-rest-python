@@ -44,7 +44,7 @@ def main():
             print(f'{stream.get(QC_NAME)}')
             stream_data = client.get_stream_data(default_model_id, key, from_date, to_date)
             for i in stream_data:
-                prop_def = next(p for p in schema.get('attributes') if p.get('id') == i)
+                prop_def = next((p for p in schema.get('attributes') if p.get('id') == i), None)
                 print(f'  {prop_def.get('name')} ({i})')
                 values = stream_data.get(i)
                 for v in values:
