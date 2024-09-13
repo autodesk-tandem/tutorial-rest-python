@@ -5,8 +5,6 @@ streams that have parameter with name 'Temperature'.
 It uses 2-legged authentication - this requires that application is added to facility as service.
 """
 
-from typing import Any
-
 from common.auth import create_token
 from common.tandemClient import TandemClient
 from common.constants import (
