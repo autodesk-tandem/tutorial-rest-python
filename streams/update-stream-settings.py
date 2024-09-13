@@ -60,17 +60,19 @@ def main():
             if parameter is None:
                 continue
             parameter_def = next((p for p in schema.get('attributes') if p.get('name') == parameter.get('name')), None)
-            # STEP 6 - create stream settings for specific parameter
+            # STEP 6 - create stream settings for specific parameter. Note this will overwrite existing settings.
             stream_settings = {
                 'thresholds': {
                     parameter_def.get('id'): {
                         'schema': 'v1',
                         'name': parameter.get('name'),
                         'lower': {
-                            'alert': 14
+                            'alert': 14,
+                            'warn': 16,
                         },
                         'upper': {
                             'alert': 23,
+                            'warn': 21
                         }
                     }
                 }
