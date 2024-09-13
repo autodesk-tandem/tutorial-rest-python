@@ -32,7 +32,9 @@ class TandemClient:
         """
 
         self.__authProvider = callback
-        self.__base_url = 'https://developer.api.autodesk.com/tandem/v1'
+        self.__app_base_path = 'https://tandem.autodesk.com'
+        self.__app_path = f'{self.__app_base_path}/client/viewer/1.0.543'
+        self.__base_path = 'https://developer.api.autodesk.com/tandem/v1'
         pass
 
     def __enter__(self) -> "TandemClient":
@@ -40,6 +42,18 @@ class TandemClient:
     
     def __exit__(self, *args: any)-> None:
         pass
+
+    @property
+    def app_base_path(self) -> str:
+        return self.__app_base_path
+
+    @property
+    def app_path(self) -> str:
+        return self.__app_path
+
+    @property
+    def base_path(self) -> str:
+        return self.__base_path
 
     def create_documents(self, facility_id: str, doc_inputs: List[Any]) -> Any:
         """"
