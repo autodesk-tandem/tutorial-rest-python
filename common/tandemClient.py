@@ -61,7 +61,7 @@ class TandemClient:
         """
 
         token = self.__authProvider()
-        endpoint = f'twins/{facility_id}/documents'
+        endpoint = f'{self.base_path}/twins/{facility_id}/documents'
         response = self.__post(token, endpoint, doc_inputs)
         return response
     
@@ -71,7 +71,7 @@ class TandemClient:
         """
 
         token = self.__authProvider()
-        endpoint = f'modeldata/{model_id}/create'
+        endpoint = f'{self.base_path}/modeldata/{model_id}/create'
         response = self.__post(token, endpoint, inputs)
         return response
 
@@ -89,7 +89,7 @@ class TandemClient:
         """
         
         token = self.__authProvider()
-        endpoint = f'modeldata/{model_id}/create'
+        endpoint = f'{self.base_path}/modeldata/{model_id}/create'
         inputs = {
             'muts': [
                 [ MUTATE_ACTIONS_INSERT, COLUMN_FAMILIES_STANDARD, COLUMN_NAMES_NAME, name ],
@@ -129,7 +129,7 @@ class TandemClient:
         """
 
         token = self.__authProvider()
-        endpoint = f'timeseries/models/{model_id}/deletestreamsdata'
+        endpoint = f'{self.base_path}/timeseries/models/{model_id}/deletestreamsdata'
         inputs = {
             'keys': keys
         }
@@ -160,7 +160,7 @@ class TandemClient:
         """
 
         token = self.__authProvider()
-        endpoint = f'modeldata/{model_id}/scan'
+        endpoint = f'{self.base_path}/modeldata/{model_id}/scan'
         inputs = {
             'families': column_families,
             'includeHistory': include_history,
@@ -177,7 +177,7 @@ class TandemClient:
         """
 
         token = self.__authProvider()
-        endpoint = f'twins/{facility_id}'
+        endpoint = f'{self.base_path}/twins/{facility_id}'
         return self.__get(token, endpoint)
     
     def get_facility_template(self, facility_id: str) -> Any:
@@ -186,7 +186,7 @@ class TandemClient:
         """
 
         token = self.__authProvider()
-        endpoint = f'twins/{facility_id}/inlinetemplate'
+        endpoint = f'{self.base_path}/twins/{facility_id}/inlinetemplate'
         return self.__get(token, endpoint)
     
     def get_group(self, group_id: str) -> Any:
@@ -195,7 +195,7 @@ class TandemClient:
         """
         
         token = self.__authProvider()
-        endpoint = f'groups/{group_id}'
+        endpoint = f'{self.base_path}/groups/{group_id}'
         result = self.__get(token, endpoint)
         return result
     
@@ -205,7 +205,7 @@ class TandemClient:
         """
         
         token = self.__authProvider()
-        endpoint = f'groups'
+        endpoint = f'{self.base_path}/groups'
         result = self.__get(token, endpoint)
         return result
     
@@ -215,7 +215,7 @@ class TandemClient:
         """
         
         token = self.__authProvider()
-        endpoint = f'modeldata/{model_id}/scan'
+        endpoint = f'{self.base_path}/modeldata/{model_id}/scan'
         inputs = {
             'families': column_families,
             'includeHistory': False,
@@ -238,7 +238,7 @@ class TandemClient:
         """
         
         token = self.__authProvider()
-        endpoint = f'modeldata/{model_id}/history'
+        endpoint = f'{self.base_path}/modeldata/{model_id}/history'
         inputs = {
             'timestamps': timestamps,
             'includeChanges': include_changes,
@@ -253,7 +253,7 @@ class TandemClient:
         """
         
         token = self.__authProvider()
-        endpoint = f'modeldata/{model_id}/history'
+        endpoint = f'{self.base_path}/modeldata/{model_id}/history'
         inputs = {
             'min': from_date,
             'max': to_date,
@@ -269,7 +269,7 @@ class TandemClient:
         """
 
         token = self.__authProvider()
-        endpoint = f'modeldata/{model_id}/schema'
+        endpoint = f'{self.base_path}/modeldata/{model_id}/schema'
         return self.__get(token, endpoint)
     
     def get_rooms(self, model_id: str, column_families: List[str] = [ COLUMN_FAMILIES_STANDARD ]) -> Any:
@@ -278,7 +278,7 @@ class TandemClient:
         """
         
         token = self.__authProvider()
-        endpoint = f'modeldata/{model_id}/scan'
+        endpoint = f'{self.base_path}/modeldata/{model_id}/scan'
         inputs = {
             'families': column_families,
             'includeHistory': False,
@@ -301,7 +301,7 @@ class TandemClient:
         """
     
         token = self.__authProvider()
-        endpoint = f'timeseries/models/{model_id}/streams/{key}'
+        endpoint = f'{self.base_path}/timeseries/models/{model_id}/streams/{key}'
         search_params = {}
         if from_date is not None:
             search_params['from'] = from_date
@@ -316,7 +316,7 @@ class TandemClient:
         """
 
         token = self.__authProvider()
-        endpoint = f'models/{model_id}/getstreamssecrets'
+        endpoint = f'{self.base_path}/models/{model_id}/getstreamssecrets'
         inputs = {
             'keys': keys
         }
@@ -329,7 +329,7 @@ class TandemClient:
         """
         
         token = self.__authProvider()
-        endpoint = f'modeldata/{model_id}/scan'
+        endpoint = f'{self.base_path}/modeldata/{model_id}/scan'
         inputs = {
             'families': column_families,
             'includeHistory': False,
@@ -352,7 +352,7 @@ class TandemClient:
         """
         
         token = self.__authProvider()
-        endpoint = f'modeldata/{model_id}/scan'
+        endpoint = f'{self.base_path}/modeldata/{model_id}/scan'
         inputs = {
             'families': column_families,
             'includeHistory': False,
@@ -377,7 +377,7 @@ class TandemClient:
         """
         
         token = self.__authProvider()
-        endpoint = f'modeldata/{model_id}/scan'
+        endpoint = f'{self.base_path}/modeldata/{model_id}/scan'
         inputs = {
             'families': column_families,
             'includeHistory': include_history,
@@ -405,7 +405,7 @@ class TandemClient:
         """
         
         token = self.__authProvider()
-        endpoint = f'twins/{facility_id}/views'
+        endpoint = f'{self.base_path}/twins/{facility_id}/views'
         result = self.__get(token, endpoint)
         return result
     
@@ -415,7 +415,7 @@ class TandemClient:
         """
         
         token = self.__authProvider()
-        endpoint = f'modeldata/{model_id}/mutate'
+        endpoint = f'{self.base_path}/modeldata/{model_id}/mutate'
         inputs = {
             'keys': keys,
             'muts': mutations,
@@ -430,7 +430,7 @@ class TandemClient:
         """
         
         token = self.__authProvider()
-        endpoint = f'models/{model_id}/resetstreamssecrets'
+        endpoint = f'{self.base_path}/models/{model_id}/resetstreamssecrets'
         inputs = {
             'keys': stream_ids,
             'hardReset': hard_reset
@@ -452,20 +452,18 @@ class TandemClient:
             file.write(response.content)
         return
     
-    def __get(self, token: str, endpoint: str, params: Dict[str, Any] | None = None) -> Any:
+    def __get(self, token: str, url: str, params: Dict[str, Any] | None = None) -> Any:
         headers = {
             'Authorization': f'Bearer {token}'
         }
-        url = f'{self.__base_url}/{endpoint}'
         response = requests.get(url, headers=headers, params=params)
         return response.json()
     
-    def __post(self, token: str, endpoint: str, data: Any, params: Dict[str, Any] | None = None) -> Any:
+    def __post(self, token: str, url: str, data: Any, params: Dict[str, Any] | None = None) -> Any:
         headers = {
             'Authorization': f'Bearer {token}',
             'Content-Type': 'application/json',
         }
-        url = f'{self.__base_url}/{endpoint}'
         response = requests.post(url, headers=headers, json=data, params=params)
         if response.status_code == 204:
             return
