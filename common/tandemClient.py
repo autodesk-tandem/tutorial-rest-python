@@ -55,6 +55,16 @@ class TandemClient:
     def base_path(self) -> str:
         return self.__base_path
 
+    def create_custom_parameter(self, group_id: str, param_inputs: any) -> Any:
+        """
+        Creates custom parameter.
+        """
+        
+        token = self.__authProvider()
+        endpoint = f'{self.app_base_path}/app/groups/{group_id}/params'
+        response = self.__post(token, endpoint, param_inputs)
+        return response
+
     def create_documents(self, facility_id: str, doc_inputs: List[Any]) -> Any:
         """"
         Adds documents to the facility.
@@ -145,6 +155,16 @@ class TandemClient:
         if len(query_params) == 0:
             query_params['allSubstreams'] = 1
         self.__post(token, endpoint, inputs, query_params)
+
+    def get_custom_parameters(self, group_id: str) -> Any:
+        """
+        Returns list of custom parameters for given group.
+        """
+        
+        token = self.__authProvider()
+        endpoint = f'{self.app_base_path}/app/groups/{group_id}/params'
+        response = self.__get(token, endpoint)
+        return response
 
     def get_element(self, model_id: str, key: str, column_families: List[str] = [ COLUMN_FAMILIES_STANDARD ]) -> Any:
         """
