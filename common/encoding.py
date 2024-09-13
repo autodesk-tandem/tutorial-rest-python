@@ -24,6 +24,17 @@ def decode_stream_settings(text: str)-> Any:
 
     return settings_obj
 
+def encode_stream_settings(settings_obj: Any)-> str:
+    """
+    Encodes stream settings to base64 string.
+    """
+
+    txt = json.dumps(settings_obj, separators=(',', ':'))
+    txt = base64.b64encode(txt.encode('utf-8')).decode('utf-8')
+    txt = __make_web_safe(txt)
+
+    return txt
+
 def decode_xref_key(key: str) -> Tuple[str, str]:
     """ Decodes xref key to model id and element key."""
 
