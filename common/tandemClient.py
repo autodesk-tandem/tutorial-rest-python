@@ -33,7 +33,7 @@ class TandemClient:
 
         self.__authProvider = callback
         self.__app_base_path = 'https://tandem.autodesk.com'
-        self.__app_path = f'{self.__app_base_path}/client/viewer/1.0.543'
+        self.__app_path = f'{self.__app_base_path}/app'
         self.__base_path = 'https://developer.api.autodesk.com/tandem/v1'
         pass
 
@@ -61,7 +61,7 @@ class TandemClient:
         """
         
         token = self.__authProvider()
-        endpoint = f'{self.app_base_path}/app/groups/{group_id}/params'
+        endpoint = f'{self.app_path}/groups/{group_id}/params'
         response = self.__post(token, endpoint, param_inputs)
         return response
 
@@ -162,7 +162,7 @@ class TandemClient:
         """
         
         token = self.__authProvider()
-        endpoint = f'{self.app_base_path}/app/groups/{group_id}/params'
+        endpoint = f'{self.app_path}/groups/{group_id}/params'
         response = self.__get(token, endpoint)
         return response
 
