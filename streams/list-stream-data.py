@@ -9,6 +9,7 @@ from time import localtime, strftime, time
 from common.auth import create_token
 from common.tandemClient import TandemClient
 from common.constants import (
+    DATA_TYPE_STRING,
     QC_KEY,
     QC_NAME
 )
@@ -46,9 +47,19 @@ def main():
             for i in stream_data:
                 prop_def = next((p for p in schema.get('attributes') if p.get('id') == i), None)
                 print(f'  {prop_def.get('name')} ({i})')
+                value_map = {}
+
+                if (prop_def.get('dataType') == DATA_TYPE_STRING):
+                    for key, value in prop_def.get('allowedValues').get('map').items():
+                        value_map[value] = key
                 values = stream_data.get(i)
                 for v in values:
-                    print(f'    [{strftime('%Y-%m-%d %H:%M:%S', localtime(int(v) * 0.001))}] {values[v]}')
+                    value = values[v]
+                    if prop_def.get('dataType') == DATA_TYPE_STRING:
+                        name = value_map.get(value)
+                        print(f'    [{strftime('%Y-%m-%d %H:%M:%S', localtime(int(v) * 0.001))}] {name}')
+                    else:
+                        print(f'    [{strftime('%Y-%m-%d %H:%M:%S', localtime(int(v) * 0.001))}] {value}')
 
 
 if __name__ == '__main__':
