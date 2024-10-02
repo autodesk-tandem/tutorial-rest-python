@@ -92,8 +92,7 @@ def main():
             'IP Address': '10.0.0.0',
             'Serial Number': '12345'
         }
-        for item in asset_properties:
-            value = asset_properties[item]
+        for item, value in asset_properties.items():
             class_parameter = next((p for p in class_parameters if p.get('name') == item), None)
             if class_parameter is None:
                 continue
