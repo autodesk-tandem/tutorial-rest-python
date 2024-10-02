@@ -56,7 +56,7 @@ def main():
                 target_room_model_id = model_id.replace('urn:adsk.dtm:', '')
                 break
         if target_room is None:
-            print(f'Room ${room_name} not found')
+            print(f'Room {room_name} not found')
             return
         # STEP 4 - find level. Level with same name should exist in default model.
         level_details = client.get_element(target_room_model_id, target_room.get(QC_LEVEL))
@@ -64,7 +64,7 @@ def main():
         target_level = next((l for l in levels if l.get(QC_NAME) == level_details.get(QC_NAME)), None)
 
         if target_level is None:
-            print(f'Level ${level_details.get(QC_NAME)} not found')
+            print(f'Level {level_details.get(QC_NAME, None)} not found')
             return
         # STEP 5 - create new stream. First step is to encode keys for references. In our case host element and room are same.
         target_room_key = to_full_key(target_room.get(QC_KEY))

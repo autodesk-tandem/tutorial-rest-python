@@ -109,7 +109,7 @@ def main():
         # STEP 7 - create new asset. Note that generic asset should be added to default model only.
         result = client.create_element(default_model.get('modelId'), inputs)
 
-        print(f'New asset created: ${result.get('key')}')
+        print(f'New asset created: {result.get('key')}')
 
 if __name__ == '__main__':
     main()
