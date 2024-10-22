@@ -295,6 +295,19 @@ class TandemClient:
             search_params['to'] = to_date
         result = self.__get(token, endpoint, search_params)
         return result
+    
+    def get_stream_last_reading(self, model_id: str, keys: List[str]) -> Any:
+        """
+        Returns last stream readings.
+        """
+    
+        input = {
+            'keys': keys
+        }
+        token = self.__authProvider()
+        endpoint = f'timeseries/models/{model_id}/streams'
+        result = self.__post(token, endpoint, input)
+        return result
 
     def get_stream_secrets(self, model_id: str, keys: List[str]) -> Any:
         """
