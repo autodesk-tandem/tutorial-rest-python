@@ -7,11 +7,23 @@ The examples are written in Python and require following:
 - [Python extension for Visual Code](https://marketplace.visualstudio.com/items?itemName=ms-python.python)
 - [APS application](https://aps.autodesk.com/myapps/). Add application to your facility with **Edit** permission.
 
-### Dependencies
-The examples use `requests` library for HTTP communication. Use following steps to install the library:
+### Environment
+First step is to create an environment:
 
 ```sh
-python -m pip install requests
+python -m venv .venv
+```
+
+Then activate environment:
+
+```sh
+.venv\scripts\activate
+```
+
+The examples use `requests` library for HTTP communication. Use following steps to install dependencies:
+
+```sh
+pip install -r requirements.txt
 ```
 
 ## Configuration
