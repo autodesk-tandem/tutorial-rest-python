@@ -258,6 +258,15 @@ class TandemClient:
         }
         response = self.__post(token, endpoint, inputs)
         return response
+    
+    def get_model_props(self, model_id: str) -> Any:
+        """
+        Returns model properties.
+        """
+
+        token = self.__authProvider()
+        endpoint = f'models/{model_id}/props'
+        return self.__get(token, endpoint)
 
     def get_model_schema(self, model_id: str) -> Any:
         """
