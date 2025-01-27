@@ -111,7 +111,7 @@ def main():
             if urn == 'internal':
                 continue
             item_id = urn_to_item_id(urn)
-            # check if itemId points to ACC/Docs storage - it starts with 'urn:adsk.wip' prefix
+            # check if item_id points to ACC/Docs storage - it starts with 'urn:adsk.wip' prefix
             if item_id is None or not item_id.startswith('urn:adsk.wip'):
                 continue
             # STEP 5 - get project data
