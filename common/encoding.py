@@ -35,6 +35,15 @@ def encode_stream_settings(settings_obj: Any)-> str:
 
     return txt
 
+def decode_urn(text: str) -> str:
+    """
+    Decodes urn from text.
+    """
+
+    txt = __b64_prepare(text)
+    buff = base64.b64decode(txt)
+    return buff.decode('utf-8')
+
 def decode_xref_key(key: str) -> Tuple[str, str]:
     """ Decodes xref key to model id and element key."""
 
