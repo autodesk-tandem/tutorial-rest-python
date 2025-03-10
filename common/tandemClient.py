@@ -1,4 +1,4 @@
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Literal
 import requests
 
 from .constants import (
@@ -479,6 +479,19 @@ class TandemClient:
             file.write(response.content)
         return
     
+    def update_facility_user(self, facility_id: str, user_id: str, access_level: Literal['Read', 'ReadWrite', 'Manage', 'None'] ) -> None:
+        """"
+        Updates facility user. It can also add new user to the facility.
+        """
+
+        token = self.__authProvider()
+        input = {
+            'accessLevel': access_level
+        }
+        endpoint = f'twins/{facility_id}/users/{user_id}'
+        response = self.__put(token, endpoint, input)
+        return response
+    
     def __get(self, token: str, endpoint: str, params: Dict[str, Any] | None = None) -> Any:
         headers = {
             'Authorization': f'Bearer {token}'
@@ -494,6 +507,17 @@ class TandemClient:
         }
         url = f'{self.__base_url}/{endpoint}'
         response = requests.post(url, headers=headers, json=data, params=params)
+        if response.status_code == 204:
+            return
+        return response.json()
+    
+    def __put(self, token: str, endpoint: str, data: Any, params: Dict[str, Any] | None = None) -> Any:
+        headers = {
+            'Authorization': f'Bearer {token}',
+            'Content-Type': 'application/json',
+        }
+        url = f'{self.__base_url}/{endpoint}'
+        response = requests.put(url, headers=headers, json=data, params=params)
         if response.status_code == 204:
             return
         return response.json()
