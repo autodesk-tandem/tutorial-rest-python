@@ -159,7 +159,7 @@ class TandemClient:
     
     def get_facility(self, facility_id: str) -> Any:
         """
-        Retuns facility for given facilty urn.
+        Retuns facility for given facility urn.
         """
 
         token = self.__authProvider()
@@ -168,11 +168,20 @@ class TandemClient:
     
     def get_facility_template(self, facility_id: str) -> Any:
         """
-        Retuns facility teplate for given facilty urn.
+        Retuns facility teplate for given facility urn.
         """
 
         token = self.__authProvider()
         endpoint = f'twins/{facility_id}/inlinetemplate'
+        return self.__get(token, endpoint)
+    
+    def get_facility_users(self, facility_id: str) -> Dict[str, Any]:
+        """
+        Returns dictionary of facility users.
+        """
+
+        token = self.__authProvider()
+        endpoint = f'twins/{facility_id}/users'
         return self.__get(token, endpoint)
     
     def get_group(self, group_id: str) -> Any:
