@@ -169,6 +169,8 @@ def to_system_id(key: str) -> str:
 def to_xref_key(model_id: str, key: str) -> str:
     """ Converts model id and element key to xref key."""
 
+    if model_id.startswith('urn:'):
+        model_id = model_id.replace('urn:adsk.dtm:', '')
     model_buff = base64.b64decode(__b64_prepare(model_id))
     element_buff = base64.b64decode(__b64_prepare(key))
     result = bytearray(MODEL_ID_SIZE + ELEMENT_ID_WITH_FLAGS_SIZE)
