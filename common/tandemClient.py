@@ -13,6 +13,7 @@ from .constants import (
     COLUMN_NAMES_NAME,
     COLUMN_NAMES_PARENT,
     COLUMN_NAMES_ROOMS,
+    COLUMN_NAMES_TANDEM_CATEGORY,
     COLUMN_NAMES_UNIFORMAT_CLASS,
     ELEMENT_FLAGS_LEVEL,
     ELEMENT_FLAGS_ROOM,
@@ -42,7 +43,7 @@ class TandemClient:
         pass
 
     def create_documents(self, facility_id: str, doc_inputs: List[Any]) -> Any:
-        """"
+        """
         Adds documents to the facility.
         """
 
@@ -52,7 +53,7 @@ class TandemClient:
         return response
     
     def create_element(self, model_id: str, inputs: List[Any]) -> Any:
-        """"
+        """
         Adds new element to the model.
         """
 
@@ -65,7 +66,8 @@ class TandemClient:
                       model_id: str,
                       name: str,
                       uniformat_class_id: str,
-                      category_id: str,
+                      category_id: str | None = None,
+                      tandem_category: str | None = None,
                       classification: str | None = None,
                       parent_xref: str | None = None,
                       room_xref: str | None = None,
@@ -86,6 +88,8 @@ class TandemClient:
             'desc': 'Create stream'
         }
 
+        if tandem_category is not None:
+            inputs['muts'].append([ MUTATE_ACTIONS_INSERT, COLUMN_FAMILIES_STANDARD, COLUMN_NAMES_TANDEM_CATEGORY, tandem_category ])
         if classification is not None:
             inputs['muts'].append([ MUTATE_ACTIONS_INSERT, COLUMN_FAMILIES_STANDARD, COLUMN_NAMES_CLASSIFICATION, classification ])
         if parent_xref is not None:
