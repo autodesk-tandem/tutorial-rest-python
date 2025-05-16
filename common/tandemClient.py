@@ -1,4 +1,4 @@
-from typing import Any, Dict, List
+from typing import Any, Callable, Dict, List
 import requests
 
 from .constants import (
@@ -27,13 +27,14 @@ from .constants import (
 class TandemClient:
     """ A simple wrapper for Tandem Data API """
 
-    def __init__(self, callback) -> None:
+    def __init__(self, callback: Callable[..., str], region: str | None = None) -> None:
         """
         Creates new instance of TandemClient.
         """
 
         self.__authProvider = callback
         self.__base_url = 'https://developer.api.autodesk.com/tandem/v1'
+        self.__region = region
         pass
 
     def __enter__(self) -> "TandemClient":
@@ -487,6 +488,8 @@ class TandemClient:
         headers = {
             'Authorization': f'Bearer {token}'
         }
+        if (self.__region is not None):
+            headers['Region'] = self.__region
         url = f'{self.__base_url}/{endpoint}'
         response = requests.get(url, headers=headers, params=params)
         return response.json()
@@ -496,8 +499,12 @@ class TandemClient:
             'Authorization': f'Bearer {token}',
             'Content-Type': 'application/json',
         }
+        if (self.__region is not None):
+            headers['Region'] = self.__region
         url = f'{self.__base_url}/{endpoint}'
         response = requests.post(url, headers=headers, json=data, params=params)
         if response.status_code == 204:
             return
+        if len(response.content) == 0:
+            return None
         return response.json()

@@ -1,3 +1,12 @@
+from enum import StrEnum
+
+class Region(StrEnum):
+    """
+    Enum for region types.
+    """
+    US = 'US'
+    EMEA = 'EMEA'
+    
 ELEMENT_FLAGS_SIZE = 4
 ELEMENT_ID_SIZE = 20
 ELEMENT_ID_WITH_FLAGS_SIZE = ELEMENT_FLAGS_SIZE + ELEMENT_ID_SIZE
