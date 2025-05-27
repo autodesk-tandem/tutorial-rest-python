@@ -456,7 +456,7 @@ class TandemClient:
         result = self.__post(token, endpoint, inputs)
         return result
     
-    def reset_stream_secrets(self, model_id, stream_ids: List[str], hard_reset: bool = False) -> None:
+    def reset_stream_secrets(self, model_id, stream_ids: List[str], hard_reset: bool = False) -> Any:
         """
         Resets secrets for given streams.
         """
@@ -467,8 +467,8 @@ class TandemClient:
             'keys': stream_ids,
             'hardReset': hard_reset
         }
-        self.__post(token, endpoint, inputs)
-        return
+        result = self.__post(token, endpoint, inputs)
+        return result
     
     def save_document_content(self, url: str, file_path: str) -> None:
         """"
