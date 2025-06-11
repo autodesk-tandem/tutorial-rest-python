@@ -8,7 +8,8 @@ from common.auth import create_token
 from common.tandemClient import TandemClient
 from common.constants import (
     QC_KEY,
-    QC_NAME
+    QC_NAME,
+    QC_ONAME
 )
 from common.encoding import to_full_key, to_short_key
 from common.utils import get_default_model
@@ -33,7 +34,7 @@ def main():
         # STEP 3 - get streams
         streams = client.get_streams(default_model_id)
         # we need to convert stream keys to fully qualified key
-        keys = list(map(lambda stream: to_full_key(stream.get(QC_KEY), True), streams))
+        keys = list(map(lambda stream: stream.get(QC_KEY), streams))
         # STEP 4 - get streams secrets
         data = client.get_stream_secrets(default_model_id, keys)
         # STEP 5 - print out stream name + secret
@@ -42,7 +43,11 @@ def main():
             stream_key = to_short_key(key)
             stream_secret = data.get(key)
             stream = next((s for s in streams if s.get(QC_KEY) == stream_key), None)
-            print(f'{stream.get(QC_NAME)}: {stream_secret}')
+            if stream is None:
+                continue
+            name = stream.get(QC_ONAME) or stream.get(QC_NAME)
+
+            print(f'{name}: {stream_secret}')
 
 
 if __name__ == '__main__':

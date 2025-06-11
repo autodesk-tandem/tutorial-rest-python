@@ -11,7 +11,8 @@ from common.tandemClient import TandemClient
 from common.constants import (
     DATA_TYPE_STRING,
     QC_KEY,
-    QC_NAME
+    QC_NAME,
+    QC_ONAME
 )
 from common.encoding import to_full_key
 from common.utils import get_default_model
@@ -41,8 +42,10 @@ def main():
         streams = client.get_streams(default_model_id)
         for stream in streams:
             # STEP 4 - get stream data for last NN days and print their values
-            key = to_full_key(stream.get(QC_KEY), True)
-            print(f'{stream.get(QC_NAME)}')
+            key = stream.get(QC_KEY)
+            name = stream.get(QC_ONAME) or stream.get(QC_NAME)
+
+            print(f'{name}')
             stream_data = client.get_stream_data(default_model_id, key, from_date, to_date)
             for i in stream_data:
                 prop_def = next((p for p in schema.get('attributes') if p.get('id') == i), None)
