@@ -40,7 +40,7 @@ class TandemClient:
     def __enter__(self) -> "TandemClient":
         return self
     
-    def __exit__(self, *args: any)-> None:
+    def __exit__(self, *args: Any)-> None:
         pass
 
     def create_documents(self, facility_id: str, doc_inputs: List[Any]) -> Any:
@@ -67,7 +67,7 @@ class TandemClient:
                       model_id: str,
                       name: str,
                       uniformat_class_id: str,
-                      category_id: str | None = None,
+                      category_id: int | None = None,
                       tandem_category: str | None = None,
                       classification: str | None = None,
                       parent_xref: str | None = None,
@@ -145,18 +145,21 @@ class TandemClient:
         data = self.get_elements(model_id, [ key ], column_families)
         return data[0]
 
-    def get_elements(self, model_id: str, element_ids: List[str] | None = None, column_families: List[str] = [ COLUMN_FAMILIES_STANDARD ], include_history: bool = False) -> Any:
+    def get_elements(self, model_id: str, element_ids: List[str] | None = None, column_families: List[str] | None = [ COLUMN_FAMILIES_STANDARD ], columns: List[str] | None = None, include_history: bool = False) -> Any:
         """
         Returns list of elements for given model.
         """
 
         token = self.__authProvider()
         endpoint = f'modeldata/{model_id}/scan'
-        inputs = {
-            'families': column_families,
+        inputs: Dict[str, Any] = {
             'includeHistory': include_history,
             'skipArrays': True
         }
+        if column_families is not None and len(column_families) > 0:
+            inputs['families'] = column_families
+        if columns is not None and len(columns) > 0:
+            inputs['qualifiedColumns'] = columns
         if element_ids is not None and len(element_ids) > 0:
             inputs['keys'] = element_ids
         result = self.__post(token, endpoint, inputs)
@@ -492,9 +495,11 @@ class TandemClient:
             headers['Region'] = self.__region
         url = f'{self.__base_url}/{endpoint}'
         response = requests.get(url, headers=headers, params=params)
+        if response.status_code != 200:
+            raise Exception(f'Error while calling Tandem API: {response.status_code} - {response.text}')
         return response.json()
     
-    def __post(self, token: str, endpoint: str, data: Any, params: Dict[str, Any] | None = None) -> Any:
+    def __post(self, token: str, endpoint: str, data: Any | None = None, params: Dict[str, Any] | None = None) -> Any:
         headers = {
             'Authorization': f'Bearer {token}',
             'Content-Type': 'application/json',
@@ -503,8 +508,10 @@ class TandemClient:
             headers['Region'] = self.__region
         url = f'{self.__base_url}/{endpoint}'
         response = requests.post(url, headers=headers, json=data, params=params)
-        if response.status_code == 204:
+        if response.status_code == 202 or response.status_code == 204:
             return
+        if response.status_code != 200:
+            raise Exception(f'Error while calling Tandem API: {response.status_code} - {response.text}')
         if len(response.content) == 0:
             return None
         return response.json()
