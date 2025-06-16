@@ -6,6 +6,7 @@ It uses 2-legged authentication - this requires that application is added to the
 needs to be whitelisted in ACC/Docs.
 """
 import requests
+from typing import Any, Tuple
 
 from common.auth import create_token
 from common.tandemClient import TandemClient
@@ -16,7 +17,7 @@ APS_CLIENT_ID = 'YOUR_CLIENT_ID'
 APS_CLIENT_SECRET = 'YOUR_CLIENT_SECRET'
 FACILITY_URN = 'YOUR_FACILITY_URN'
 
-def get_item(token: str, project_id: str, item_id:str) -> any:
+def get_item(token: str, project_id: str, item_id:str) -> Any:
     """
     Get item data using Data Management API
     """
@@ -57,9 +58,8 @@ def get_item(token: str, project_id: str, item_id:str) -> any:
         raise Exception(f"Failed to get item details: {response.status_code} - {response.text}")
     result = response.json()
     return result.get('data').get('relationships').get('resources').get('data')[0]
-    
 
-def get_project(token: str, account_id: str, project_id: str) -> any:
+def get_project(token: str, account_id: str, project_id: str) -> Any:
     """
     Get project data using Data Management API
     """
@@ -74,7 +74,7 @@ def get_project(token: str, account_id: str, project_id: str) -> any:
     result = response.json()
     return result.get('data')
 
-def urn_to_item_id(urn: str) -> str:
+def parse_urn(urn: str) -> Tuple[str, str] | None:
     """
     Converts URN to item ID
     """
@@ -91,7 +91,7 @@ def urn_to_item_id(urn: str) -> str:
     if lineage_id.startswith('vf.'):
         lineage_id = lineage_id[3:]
     result = f'{bucket_key}:dm.lineage:{lineage_id}'
-    return result
+    return (result, text)
 
 def main():
     # Start
@@ -110,7 +110,7 @@ def main():
             # skip internal models - i.e. default model
             if urn == 'internal':
                 continue
-            item_id = urn_to_item_id(urn)
+            (item_id, version_id) = parse_urn(urn)
             # check if item_id points to ACC/Docs storage - it starts with 'urn:adsk.wip' prefix
             if item_id is None or not item_id.startswith('urn:adsk.wip'):
                 continue
@@ -129,6 +129,7 @@ def main():
             print(f'{l.get('label')}')
             print(f'  {project.get('attributes').get('name')}')
             print(f'    {item.get('meta').get('attributes').get('pathInProject')}/{item.get('meta').get('attributes').get('displayName')}')
+            print(f'  needs update: {item.get('meta').get('relationships').get('tip').get('data').get('id') != version_id}')
 
 if __name__ == '__main__':
     main()
