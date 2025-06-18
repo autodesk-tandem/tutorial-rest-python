@@ -48,8 +48,11 @@ def main():
                     continue
                 # STEP 6 - print out asset name & asset type name
                 asset_type = next((a for a in asset_types if a[QC_KEY] == asset_type_id), None)
+                if asset_type is None:
+                    continue
+                asset_type_name = asset_type.get(QC_ONAME) or asset_type.get(QC_NAME)
                 asset_name = asset.get(QC_ONAME) or asset.get(QC_NAME)
-                print(f'{asset_name}: {asset_type.get(QC_NAME)}')
+                print(f'{asset_name}: {asset_type_name}')
 
 
 if __name__ == '__main__':
