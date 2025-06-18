@@ -110,7 +110,11 @@ def main():
             # skip internal models - i.e. default model
             if urn == 'internal':
                 continue
-            (item_id, version_id) = parse_urn(urn)
+            parsed_urn = parse_urn(urn)
+            if parsed_urn is None:
+                print(f'Unable to parse URN: {urn}')
+                continue
+            (item_id, version_id) = parsed_urn
             # check if item_id points to ACC/Docs storage - it starts with 'urn:adsk.wip' prefix
             if item_id is None or not item_id.startswith('urn:adsk.wip'):
                 continue
