@@ -113,7 +113,7 @@ def to_element_GUID(key: str) -> str:
     txt = __b64_prepare(key)
     buff = base64.b64decode(txt)
     if len(buff) == ELEMENT_ID_WITH_FLAGS_SIZE:
-        del buff[0:4]
+        buff =  buff[4:]
     hex = [f'{b:02x}' for b in buff]
     hex_groups = [4, 2, 2, 2, 6, 4]
     pos = 0
@@ -176,6 +176,22 @@ def to_xref_key(model_id: str, key: str) -> str:
     result = bytearray(MODEL_ID_SIZE + ELEMENT_ID_WITH_FLAGS_SIZE)
     result[0:] = model_buff
     result[MODEL_ID_SIZE:] = element_buff
+    return __make_web_safe(base64.b64encode(result).decode('utf-8'))
+
+def to_xref_key_array(items: List[Tuple[str, str]]) -> str:
+    """ Converts list of model id and element key tuples to xref key array."""
+
+    if items is None or len(items) == 0:
+        return ''
+    result = bytearray()
+    for item in items:
+        model_id, key = item
+        model_buff = base64.b64decode(__b64_prepare(model_id))
+        element_buff = base64.b64decode(__b64_prepare(key))
+        xref = bytearray(MODEL_ID_SIZE + ELEMENT_ID_WITH_FLAGS_SIZE)
+        xref[0:] = model_buff
+        xref[MODEL_ID_SIZE:] = element_buff
+        result.extend(xref)
     return __make_web_safe(base64.b64encode(result).decode('utf-8'))
 
 def __b64_prepare(text: str) -> str:
