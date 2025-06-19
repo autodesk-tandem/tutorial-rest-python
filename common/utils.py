@@ -6,11 +6,8 @@ def get_default_model(facility_id: str, facility: Any) -> Any | None:
     """
     
     default_model_id = facility_id.replace('urn:adsk.dtt:', 'urn:adsk.dtm:')
-    for link in facility.get('links'):
-        model_id = link.get('modelId')
-        if model_id == default_model_id:
-            return link
-    return None
+    default_model = next((l for l in facility.get('links', []) if l.get('modelId') == default_model_id), None)
+    return default_model
 
 def match_classification(a: str, b: str) -> bool:
     """
