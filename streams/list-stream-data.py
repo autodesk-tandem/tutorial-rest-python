@@ -14,7 +14,6 @@ from common.constants import (
     QC_NAME,
     QC_ONAME
 )
-from common.encoding import to_full_key
 from common.utils import get_default_model
 
 # update values below according to your environment
@@ -32,8 +31,9 @@ def main():
         # STEP 2 - get facility and default model. The default model has same id as facility
         facility = client.get_facility(FACILITY_URN)
         default_model = get_default_model(FACILITY_URN, facility)
+        if default_model is None:
+            raise Exception('Default model not found')
         default_model_id = default_model.get('modelId')
-
         # STEP 3 - get schema
         schema = client.get_model_schema(default_model_id)
         # STEP 4 - calculate dates (from, to)
@@ -49,6 +49,8 @@ def main():
             stream_data = client.get_stream_data(default_model_id, key, from_date, to_date)
             for i in stream_data:
                 prop_def = next((p for p in schema.get('attributes') if p.get('id') == i), None)
+                if prop_def is None:
+                    continue
                 print(f'  {prop_def.get('name')} ({i})')
                 value_map = {}
 
