@@ -5,7 +5,7 @@ but uses different API call which is more efficient for getting last stream valu
 It uses 2-legged authentication - this requires that application is added to facility as service.
 """
 
-from time import localtime, strftime, time
+from time import localtime, strftime
 
 from common.auth import create_token
 from common.tandemClient import TandemClient
@@ -32,8 +32,9 @@ def main():
         # STEP 2 - get facility and default model. The default model has same id as facility
         facility = client.get_facility(FACILITY_URN)
         default_model = get_default_model(FACILITY_URN, facility)
+        if default_model is None:
+            raise Exception('Default model not found')
         default_model_id = default_model.get('modelId')
-
         # STEP 3 - get schema
         schema = client.get_model_schema(default_model_id)
         # STEP 4 - get streams
@@ -44,15 +45,17 @@ def main():
         for key in data:
             # STEP 6 - read stream name
             stream = next((s for s in streams if to_full_key(s.get(QC_KEY), True) == key), None)
-            name = stream.get(QC_ONAME, None)
-            if name is None:
-                name = stream.get(QC_NAME, None)
+            if stream is None:
+                continue
+            name = stream.get(QC_ONAME, None) or stream.get(QC_NAME, None)
             print(f'{name}')
             # STEP 7 - print stream values
             item = data.get(key)
 
             for prop_id in item:
                 prop_def = next((p for p in schema.get('attributes') if p.get('id') == prop_id), None)
+                if prop_def is None:
+                    continue
                 print(f'  {prop_def.get('name')} ({prop_id})')
                 # STEP 8 - create map in case of discrete values. In this case the map of allowed strings
                 # is stored in the property definition. The map is string to number. The stream data contains integer
