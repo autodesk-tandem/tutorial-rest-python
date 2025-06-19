@@ -31,6 +31,8 @@ def main():
         # STEP 2 - get facility and default model. The default model has same id as facility
         facility = client.get_facility(FACILITY_URN)
         default_model = get_default_model(FACILITY_URN, facility)
+        if default_model is None:
+            raise Exception('Default model not found')
         default_model_id = default_model.get('modelId')
         # STEP 3 - get model schema. It is needed to find parameter id.
         schema = client.get_model_schema(default_model_id)
@@ -43,8 +45,12 @@ def main():
         stream_key = to_full_key(stream.get(QC_KEY), True)
         stream_data = client.get_stream_data(default_model_id, stream_key)
         # STEP 6 - find substream by parameter name
+        prop_def = None
+
         for item in stream_data:
             pd = next((prop for prop in schema.get('attributes') if prop['fam'] == COLUMN_FAMILIES_DTPROPERTIES and prop['id'] == item), None)
+            if pd is None:
+                continue
             if pd.get('name') == PARAMETER_NAME:
                 prop_def = pd
                 break

@@ -11,7 +11,7 @@ from common.constants import (
     QC_NAME,
     QC_ONAME
 )
-from common.encoding import to_full_key, to_short_key
+from common.encoding import to_short_key
 from common.utils import get_default_model
 
 # update values below according to your environment
@@ -29,8 +29,9 @@ def main():
         # STEP 2 - get facility and default model. The default model has same id as facility
         facility = client.get_facility(FACILITY_URN)
         default_model = get_default_model(FACILITY_URN, facility)
+        if default_model is None:
+            raise Exception('Default model not found')
         default_model_id = default_model.get('modelId')
-
         # STEP 3 - get streams
         streams = client.get_streams(default_model_id)
         # we need to convert stream keys to fully qualified key
