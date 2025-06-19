@@ -53,7 +53,7 @@ class TandemClient:
         response = self.__post(token, endpoint, doc_inputs)
         return response
     
-    def create_element(self, model_id: str, inputs: List[Any]) -> Any:
+    def create_element(self, model_id: str, inputs: Dict[str, Any]) -> Any:
         """
         Adds new element to the model.
         """
