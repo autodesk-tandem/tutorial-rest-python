@@ -31,8 +31,9 @@ def main():
         # STEP 2 - get facility and default model. The default model has same id as facility
         facility = client.get_facility(FACILITY_URN)
         default_model = get_default_model(FACILITY_URN, facility)
+        if default_model is None:
+            raise Exception('Default model not found')
         default_model_id = default_model.get('modelId')
-
         # STEP 3 - get streams
         streams = client.get_streams(default_model_id, [ COLUMN_FAMILIES_STANDARD, COLUMN_FAMILIES_XREFS ])
         # STEP 4 - get parent data
