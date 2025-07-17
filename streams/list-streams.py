@@ -32,8 +32,9 @@ def main():
         default_model = get_default_model(FACILITY_URN, facility)
         if default_model is None:
             raise Exception('Default model not found')
+        default_model_id = default_model.get('modelId')
         # STEP 3 - get streams and their parents
-        streams = client.get_streams(default_model.get('modelId'), [ COLUMN_FAMILIES_STANDARD, COLUMN_FAMILIES_XREFS ])
+        streams = client.get_streams(default_model_id, [ COLUMN_FAMILIES_STANDARD, COLUMN_FAMILIES_XREFS ])
         model_stream_map = {}
         for i in range(len(streams)):
             stream = streams[i]

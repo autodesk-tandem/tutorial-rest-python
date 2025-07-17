@@ -29,7 +29,6 @@ def main():
         if default_model is None:
             raise Exception('Default model not found')
         default_model_id = default_model.get('modelId')
-
         # STEP 3 - get streams
         streams = client.get_streams(default_model_id)
         # STEP 4 - get stream keys

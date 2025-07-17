@@ -37,7 +37,6 @@ def main():
         # STEP 2 - get facility
         facility = client.get_facility(FACILITY_URN)
         default_model = get_default_model(FACILITY_URN, facility)
-
         if default_model is None:
             raise Exception('Default model not found')
         # STEP 3 - get facility template
@@ -47,6 +46,8 @@ def main():
         if classification is None:
             raise Exception('Classification not found')
         pset = next((p for p in template.get('psets') if p.get('name') == template.get('name')), None)
+        if pset is None:
+            raise Exception('Property set not found')
         class_parameters = list(filter(lambda item: any(match_classification(classification[0], c) for c in item.get('applicationFilters').get('userClass')), pset.get('parameters')))
         schema = client.get_model_schema(default_model.get('modelId'))
         # STEP 5 - collect inputs for new asset
