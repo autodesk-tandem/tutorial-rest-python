@@ -6,6 +6,7 @@ class Region(StrEnum):
     """
     US = 'US'
     EMEA = 'EMEA'
+    AUS = 'AUS'
     
 ELEMENT_FLAGS_SIZE = 4
 ELEMENT_ID_SIZE = 20
