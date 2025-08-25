@@ -6,8 +6,11 @@ def get_default_model(facility_id: str, facility: Any) -> Any | None:
     """
     
     default_model_id = facility_id.replace('urn:adsk.dtt:', 'urn:adsk.dtm:')
-    default_model = next((l for l in facility.get('links', []) if l.get('modelId') == default_model_id), None)
-    return default_model
+    for link in facility.get('links'):
+        model_id = link.get('modelId')
+        if model_id == default_model_id:
+            return link
+    return None
 
 def match_classification(a: str, b: str) -> bool:
     """
@@ -30,11 +33,13 @@ def match_classification(a: str, b: str) -> bool:
         if a_c != b_c:
             return False
         a_i += 1
-        while a_i < len(a) and a_c.isalnum() == False:
+        while a_i < len(a) and not a[a_i].isalnum():
             a_i += 1
+        if a_i < len(a):
             a_c = a[a_i]
         b_i += 1
-        while b_i < b_len and b_c.isalnum() == False:
+        while b_i < b_len and not b[b_i].isalnum():
             b_i += 1
+        if b_i < len(b):
             b_c = b[b_i]
     return b_i == b_len
