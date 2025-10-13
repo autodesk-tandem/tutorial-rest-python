@@ -5,6 +5,7 @@ from .constants import (
     COLUMN_FAMILIES_DTPROPERTIES,
     COLUMN_FAMILIES_REFS,
     COLUMN_FAMILIES_STANDARD,
+    COLUMN_FAMILIES_SYSTEMS,
     COLUMN_FAMILIES_XREFS,
     COLUMN_NAMES_CATEGORY_ID,
     COLUMN_NAMES_CLASSIFICATION,
@@ -381,7 +382,7 @@ class TandemClient:
                 results.append(elem)
         return results
     
-    def get_systems(self, model_id: str, column_families: List[str] = [ COLUMN_FAMILIES_STANDARD ]) -> Any:
+    def get_systems(self, model_id: str, column_families: List[str] = [ COLUMN_FAMILIES_STANDARD, COLUMN_FAMILIES_REFS, COLUMN_FAMILIES_SYSTEMS ]) -> Any:
         """
         Returns system elements from given model.
         """
@@ -392,7 +393,7 @@ class TandemClient:
             'families': column_families,
             'includeHistory': False,
             'skipArrays': True
-        };
+        }
         data = self.__post(token, endpoint, inputs)
         results = []
 
