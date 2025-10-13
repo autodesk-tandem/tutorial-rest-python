@@ -1,5 +1,13 @@
 from typing import Any
 
+from .constants import (
+    ELEMENT_FLAGS_GENERIC_ASSET,
+    ELEMENT_FLAGS_LEVEL,
+    ELEMENT_FLAGS_STREAM,
+    ELEMENT_FLAGS_SYSTEM,
+    SYSTEM_CLASS_NAMES
+)
+
 def get_default_model(facility_id: str, facility: Any) -> Any | None:
     """
     Returns default model for given facility.
@@ -11,6 +19,16 @@ def get_default_model(facility_id: str, facility: Any) -> Any | None:
         if model_id == default_model_id:
             return link
     return None
+
+def is_logical_element(element_flags: int) -> bool:
+    """
+    Returns true if the element is a logical element.
+    """
+
+    return (element_flags == ELEMENT_FLAGS_STREAM or
+            element_flags == ELEMENT_FLAGS_LEVEL or
+            element_flags == ELEMENT_FLAGS_GENERIC_ASSET or
+            element_flags == ELEMENT_FLAGS_SYSTEM)
 
 def match_classification(a: str, b: str) -> bool:
     """
@@ -43,3 +61,17 @@ def match_classification(a: str, b: str) -> bool:
         if b_i < len(b):
             b_c = b[b_i]
     return b_i == b_len
+
+def system_class_to_list(flags:int) -> list[str]:
+    """
+    Converts endcoded system class flags to array of class names.
+    """
+
+    if flags is None or flags == 0:
+        return []
+    result = []
+
+    for i in range(len(SYSTEM_CLASS_NAMES)):
+        if flags & (1 << i):
+            result.append(SYSTEM_CLASS_NAMES[i])
+    return result
