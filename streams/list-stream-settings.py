@@ -12,7 +12,7 @@ from common.constants import (
     QC_NAME,
     QC_SETTINGS
 )
-from common.encoding import decode_stream_settings
+from common.encoding import decode_text_to_object
 from common.utils import get_default_model
 
 # update values below according to your environment
@@ -40,7 +40,7 @@ def main():
             if stream_settings is None:
                 continue
             # STEP 5 - decode settings and print thresholds
-            settings = decode_stream_settings(stream_settings)
+            settings = decode_text_to_object(stream_settings)
             print(f'Stream: {stream.get(QC_NAME)}')
             print(f'  Thresholds:')
             for key in settings.get('thresholds'):
