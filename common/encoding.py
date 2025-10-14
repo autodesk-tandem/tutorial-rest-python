@@ -13,16 +13,16 @@ from .constants import (
     SYSTEM_ID_SIZE
 )
 
-def decode_stream_settings(text: str)-> Any:
+def decode_text_to_object(text: str)-> Any:
     """
-    Decodes stream settings from text.
+    Decodes base64 encoded text to object.
     """
 
     txt = __b64_prepare(text)
-    settings = base64.b64decode(txt)
-    settings_obj = json.loads(settings)
+    bytes = base64.b64decode(txt)
+    result = json.loads(bytes)
 
-    return settings_obj
+    return result
 
 def encode_stream_settings(settings_obj: Any)-> str:
     """
