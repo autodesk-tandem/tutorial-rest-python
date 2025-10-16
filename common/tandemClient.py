@@ -246,6 +246,24 @@ class TandemClient:
                 results.append(elem)
         return results
     
+    def get_model(self, model_id: str) -> Any:
+        """
+        Returns model for given model URN.
+        """
+
+        token = self.__authProvider()
+        endpoint = f'modeldata/{model_id}/model'
+        return self.__get(token, endpoint)
+    
+    def get_model_attributes(self, model_id: str) -> Any:
+        """
+        Returns model attributes for given model URN.
+        """
+
+        token = self.__authProvider()
+        endpoint = f'modeldata/{model_id}/attrs'
+        return self.__get(token, endpoint)
+    
     def get_model_history(self, model_id: str, timestamps: List[int], include_changes: bool = False, use_full_keys: bool = False):
         """
         Returns model changes.
