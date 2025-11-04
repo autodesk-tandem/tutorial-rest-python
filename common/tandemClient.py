@@ -1,4 +1,4 @@
-from typing import Any, Callable, Dict, List
+from typing import Any, Callable, Dict, List, Literal
 import requests
 
 from .constants import (
@@ -28,13 +28,17 @@ from .constants import (
 class TandemClient:
     """ A simple wrapper for Tandem Data API """
 
-    def __init__(self, callback: Callable[..., str], region: str | None = None) -> None:
+    def __init__(self, callback: Callable[..., str], region: str | None = None, env: Literal['prod', 'stg'] = 'prod') -> None:
         """
         Creates new instance of TandemClient.
         """
 
+        base_url = {
+            'prod': 'https://developer.api.autodesk.com',
+            'stg': 'https://developer-stg.api.autodesk.com'
+        }.get(env)
         self.__authProvider = callback
-        self.__base_url = 'https://developer.api.autodesk.com/tandem/v1'
+        self.__base_url = f'{base_url}/tandem/v1'
         self.__region = region
         pass
 
