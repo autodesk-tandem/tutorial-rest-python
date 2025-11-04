@@ -20,6 +20,7 @@ from .constants import (
     ELEMENT_FLAGS_ROOM,
     ELEMENT_FLAGS_STREAM,
     ELEMENT_FLAGS_SYSTEM,
+    ELEMENT_FLAGS_TICKET,
     MUTATE_ACTIONS_DELETE_ROW,
     MUTATE_ACTIONS_INSERT,
     QC_ELEMENT_FLAGS
@@ -243,9 +244,9 @@ class TandemClient:
         results = []
 
         for elem in data:
-            if elem == 'v1':
+            if not isinstance(elem, dict):
                 continue
-            flags = elem.get(QC_ELEMENT_FLAGS)
+            flags = elem.get(QC_ELEMENT_FLAGS, None)
             if flags == ELEMENT_FLAGS_LEVEL:
                 results.append(elem)
         return results
@@ -333,9 +334,9 @@ class TandemClient:
         results = []
 
         for elem in data:
-            if elem == 'v1':
+            if not isinstance(elem, dict):
                 continue
-            flags = elem.get(QC_ELEMENT_FLAGS)
+            flags = elem.get(QC_ELEMENT_FLAGS, None)
             if flags == ELEMENT_FLAGS_ROOM:
                 results.append(elem)
         return results
@@ -397,9 +398,9 @@ class TandemClient:
         results = []
 
         for elem in data:
-            if elem == 'v1':
+            if not isinstance(elem, dict):
                 continue
-            flags = elem.get(QC_ELEMENT_FLAGS)
+            flags = elem.get(QC_ELEMENT_FLAGS, None)
             if flags == ELEMENT_FLAGS_STREAM:
                 results.append(elem)
         return results
@@ -420,9 +421,9 @@ class TandemClient:
         results = []
 
         for elem in data:
-            if elem == 'v1':
+            if not isinstance(elem, dict):
                 continue
-            flags = elem.get(QC_ELEMENT_FLAGS)
+            flags = elem.get(QC_ELEMENT_FLAGS, None)
             if flags == ELEMENT_FLAGS_SYSTEM:
                 results.append(elem)
         return results
@@ -445,7 +446,7 @@ class TandemClient:
         results = []
 
         for elem in data:
-            if elem == 'v1':
+            if not isinstance(elem, dict):
                 continue
             keys = elem.keys()
             custom_props = []
@@ -454,6 +455,29 @@ class TandemClient:
                 if k.startswith('z:'):
                     custom_props.append(k)
             if len(custom_props) > 0:
+                results.append(elem)
+        return results
+    
+    def get_tickets(self, model_id: str, column_families: List[str] = [ COLUMN_FAMILIES_STANDARD, COLUMN_FAMILIES_XREFS ]) -> Any:
+        """
+        Returns ticket elements from given model.
+        """
+        
+        token = self.__authProvider()
+        endpoint = f'modeldata/{model_id}/scan'
+        inputs = {
+            'families': column_families,
+            'includeHistory': False,
+            'skipArrays': True
+        }
+        data = self.__post(token, endpoint, inputs)
+        results = []
+
+        for elem in data:
+            if not isinstance(elem, dict):
+                continue
+            flags = elem.get(QC_ELEMENT_FLAGS, None)
+            if flags == ELEMENT_FLAGS_TICKET:
                 results.append(elem)
         return results
     
