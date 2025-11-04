@@ -1,6 +1,7 @@
 import base64
 import json
 import struct
+import uuid
 from typing import Any, List, Tuple
 
 from .constants import (
@@ -107,6 +108,15 @@ def from_xref_key_array(text: str) -> List[Tuple[str, str]]:
         offset += MODEL_ID_SIZE + ELEMENT_ID_WITH_FLAGS_SIZE
     return result
 
+def new_element_key(key_flags: int) -> str:
+    """ Creates new element key with given flags."""
+
+    buff = bytearray(ELEMENT_ID_WITH_FLAGS_SIZE)
+
+    struct.pack_into('>I', buff, 0, key_flags)
+    buff[4:4 + 16] = uuid.uuid4().bytes
+    return __make_web_safe(base64.b64encode(buff).decode('utf-8'))
+
 def to_element_GUID(key: str) -> str:
     """ Converts element key to Revit GUID. Works for both short and full key. Note: It works only for models imported from Revit."""
 
@@ -164,7 +174,6 @@ def to_system_id(key: str) -> str:
     text = base64.b64encode(tmp).decode('utf-8')
     text = text.replace('=','')
     return text
-    
 
 def to_xref_key(model_id: str, key: str) -> str:
     """ Converts model id and element key to xref key."""
