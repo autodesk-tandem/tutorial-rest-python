@@ -44,6 +44,16 @@ class TandemClient:
     def __exit__(self, *args: Any)-> None:
         pass
 
+    def confirm_document_upload(self, facility_id: str, upload_inputs: Any) -> Any:
+        """
+        Completes document upload for given facility.
+        """
+        
+        token = self.__authProvider()
+        endpoint = f'twins/{facility_id}/documents/confirmupload'
+        result = self.__post(token, endpoint, upload_inputs)
+        return result
+
     def create_documents(self, facility_id: str, doc_inputs: List[Any]) -> Any:
         """
         Adds documents to the facility.
@@ -487,6 +497,16 @@ class TandemClient:
         with open(file_path, 'wb') as file:
             file.write(response.content)
         return
+
+    def upload_document(self, facility_id: str, file_inputs: Any) -> Any:
+        """
+        Starts document upload for given facility.
+        """
+        
+        token = self.__authProvider()
+        endpoint = f'twins/{facility_id}/documents/upload'
+        result = self.__post(token, endpoint, file_inputs)
+        return result
     
     def __get(self, token: str, endpoint: str, params: Dict[str, Any] | None = None) -> Any:
         headers = {
