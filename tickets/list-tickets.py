@@ -1,6 +1,5 @@
 """
-This example demonstrates how to create ticket using REST API. The ticket
-is assigned to specified asset.
+This example demonstrates how to list tickets from facility using REST API.
 
 It uses 2-legged authentication - this requires that application is added
 to facility as service.
