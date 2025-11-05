@@ -66,6 +66,7 @@ def main():
                     # create xref key of an asset
                     xref = to_xref_key(model_id, to_full_key(key, is_logical_element(element_flags)))
                     break
+            # element found - exit loop
             if xref is not None:
                 break
         if xref is None:
@@ -73,37 +74,38 @@ def main():
         # STEP 4 - create ticket connected to asset
         flags = ELEMENT_FLAGS_TICKET
         new_key = new_element_key(flags & ELEMENT_FLAGS_ALL_LOGICAL_MASK)
-        mutations = []
-        mutations.append([
-            MUTATE_ACTIONS_INSERT,
-            COLUMN_FAMILIES_STANDARD,
-            COLUMN_NAMES_NAME,
-            TICKET_NAME
-        ])
-        mutations.append([
-            MUTATE_ACTIONS_INSERT,
-            COLUMN_FAMILIES_STANDARD,
-            COLUMN_NAMES_ELEMENT_FLAGS,
-            flags
-        ])
-        mutations.append([
-            MUTATE_ACTIONS_INSERT,
-            COLUMN_FAMILIES_XREFS,
-            COLUMN_NAMES_PARENT,
-            xref
-        ])
-        mutations.append([
-            MUTATE_ACTIONS_INSERT,
-            COLUMN_FAMILIES_STANDARD,
-            COLUMN_NAMES_PRIORITY,
-            'Low'
-        ])
-        mutations.append([
-            MUTATE_ACTIONS_INSERT,
-            COLUMN_FAMILIES_STANDARD,
-            COLUMN_NAMES_OPEN_DATE,
-            datetime.now(timezone.utc).date().isoformat()
-        ])
+        mutations = [
+            [
+                MUTATE_ACTIONS_INSERT,
+                COLUMN_FAMILIES_STANDARD,
+                COLUMN_NAMES_NAME,
+                TICKET_NAME
+            ],
+            [
+                MUTATE_ACTIONS_INSERT,
+                COLUMN_FAMILIES_STANDARD,
+                COLUMN_NAMES_ELEMENT_FLAGS,
+                flags
+            ],
+            [
+                MUTATE_ACTIONS_INSERT,
+                COLUMN_FAMILIES_XREFS,
+                COLUMN_NAMES_PARENT,
+               xref
+            ],
+            [
+                MUTATE_ACTIONS_INSERT,
+                COLUMN_FAMILIES_STANDARD,
+                COLUMN_NAMES_PRIORITY,
+                'Low'
+            ],
+            [
+                MUTATE_ACTIONS_INSERT,
+                COLUMN_FAMILIES_STANDARD,
+                COLUMN_NAMES_OPEN_DATE,
+                datetime.now(timezone.utc).date().isoformat()
+            ]
+        ]
         keys = [new_key] * len(mutations)
         inputs = {
             'keys': keys,
