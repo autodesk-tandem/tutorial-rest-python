@@ -112,6 +112,16 @@ class TandemClient:
             inputs['muts'].append([ MUTATE_ACTIONS_INSERT, COLUMN_FAMILIES_REFS, COLUMN_NAMES_LEVEL, level_key ])
         response = self.__post(token, endpoint, inputs)
         return response.get('key')
+
+    def create_view(self, facility_id: str, view_inputs: Dict[str, Any]) -> Any:
+        """
+        Adds view to the facility.
+        """
+
+        token = self.__authProvider()
+        endpoint = f'twins/{facility_id}/views'
+        response = self.__post(token, endpoint, view_inputs)
+        return response
     
     def delete_elements(self, model_id: str, keys: List[str], desc: str):
         """
