@@ -41,6 +41,7 @@ def main():
             assets = client.get_tagged_assets(model_id,
                                               column_families=[COLUMN_FAMILIES_STANDARD, COLUMN_FAMILIES_DTPROPERTIES],
                                               include_history=True)
+            assets_key_map = {asset.get(QC_KEY): asset for asset in assets}
             model_history = client.get_model_history(model_id,
                                                      min=1,
                                                      max=int(time.time() * 1000),
@@ -50,7 +51,7 @@ def main():
                 if (ts := history_item.get('t', None)) is None:
                     continue
                 keys = history_item.get('k', [])
-                updated_assets = [asset for asset in assets if asset.get(QC_KEY) in keys]
+                updated_assets = [assets_key_map[key] for key in keys if key in assets_key_map]
                 if len(updated_assets) == 0:
                     continue
                 print(f'{datetime.fromtimestamp(ts / 1000, tz=timezone.utc).strftime('%Y-%m-%d %H:%M:%S')} - {history_item.get('d', 'NA')} ({history_item.get('n', None)})')
