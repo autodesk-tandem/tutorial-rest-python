@@ -195,6 +195,15 @@ class TandemClient:
         endpoint = f'twins/{facility_id}'
         return self.__get(token, endpoint)
     
+    def get_facility_history(self, facility_id: str, inputs: Any) -> Any:
+        """
+        Retuns history for given facility.
+        """
+
+        token = self.__authProvider()
+        endpoint = f'twins/{facility_id}/history'
+        return self.__post(token, endpoint, inputs)
+    
     def get_facility_template(self, facility_id: str) -> Any:
         """
         Retuns facility teplate for given facility urn.
@@ -284,18 +293,29 @@ class TandemClient:
         endpoint = f'modeldata/{model_id}/attrs'
         return self.__get(token, endpoint)
     
-    def get_model_history(self, model_id: str, timestamps: List[int], include_changes: bool = False, use_full_keys: bool = False):
+    def get_model_history(self,
+                          model_id: str,
+                          min: int | None = None,
+                          max: int | None = None,
+                          timestamps: List[int] | None = None,
+                          include_changes: bool = False,
+                          use_full_keys: bool = False):
         """
         Returns model changes.
         """
         
         token = self.__authProvider()
         endpoint = f'modeldata/{model_id}/history'
-        inputs = {
-            'timestamps': timestamps,
+        inputs: Dict[str, Any] = {
             'includeChanges': include_changes,
             'useFullKeys': use_full_keys
         }
+        if min is not None:
+            inputs['min'] = min
+        if max is not None:
+            inputs['max'] = max
+        if timestamps is not None:
+            inputs['timestamps'] = timestamps
         response = self.__post(token, endpoint, inputs)
         return response
     
