@@ -10,6 +10,10 @@ from common.auth import create_token
 from common.constants import (
     COLUMN_FAMILIES_DTPROPERTIES,
     COLUMN_FAMILIES_STANDARD,
+    HC_DESCRIPTION,
+    HC_KEYS,
+    HC_TIMESTAMP,
+    HC_USERNAME,
     QC_KEY,
     QC_NAME
 )
@@ -48,13 +52,13 @@ def main():
                                                      include_changes=True)
             # STEP 5 - iterate through history and print out details of changed assets
             for history_item in model_history:
-                if (ts := history_item.get('t', None)) is None:
+                if (ts := history_item.get(HC_TIMESTAMP, None)) is None:
                     continue
-                keys = history_item.get('k', [])
+                keys = history_item.get(HC_KEYS, [])
                 updated_assets = [assets_key_map[key] for key in keys if key in assets_key_map]
                 if len(updated_assets) == 0:
                     continue
-                print(f'{datetime.fromtimestamp(ts / 1000, tz=timezone.utc).strftime('%Y-%m-%d %H:%M:%S')} - {history_item.get('d', 'NA')} ({history_item.get('n', None)})')
+                print(f'{datetime.fromtimestamp(ts / 1000, tz=timezone.utc).strftime('%Y-%m-%d %H:%M:%S')} - {history_item.get(HC_DESCRIPTION, 'NA')} ({history_item.get(HC_USERNAME, None)})')
                 for asset in updated_assets:
                     name = asset.get(QC_NAME, None)
                     print(f'  {name[0]}')
