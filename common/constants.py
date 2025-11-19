@@ -144,3 +144,12 @@ SYSTEM_CLASS_NAMES = [
 	'Cable Tray Conduit',
 	'Storm'
 ]
+
+# history related constants
+HC_CLIENT_ID = 'c'
+HC_CORRELATION = 'i'
+HC_DESCRIPTION = 'd'
+HC_KEYS = 'k'
+HC_OPERATION = 'o'
+HC_TIMESTAMP = 't'
+HC_USERNAME = 'n'

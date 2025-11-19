@@ -49,6 +49,16 @@ class TandemClient:
     def __exit__(self, *args: Any)-> None:
         pass
 
+    def confirm_document_upload(self, facility_id: str, upload_inputs: Any) -> Any:
+        """
+        Completes document upload for given facility.
+        """
+        
+        token = self.__authProvider()
+        endpoint = f'twins/{facility_id}/documents/confirmupload'
+        result = self.__post(token, endpoint, upload_inputs)
+        return result
+
     def create_documents(self, facility_id: str, doc_inputs: List[Any]) -> Any:
         """
         Adds documents to the facility.
@@ -107,6 +117,16 @@ class TandemClient:
             inputs['muts'].append([ MUTATE_ACTIONS_INSERT, COLUMN_FAMILIES_REFS, COLUMN_NAMES_LEVEL, level_key ])
         response = self.__post(token, endpoint, inputs)
         return response.get('key')
+
+    def create_view(self, facility_id: str, view_inputs: Dict[str, Any]) -> Any:
+        """
+        Adds view to the facility.
+        """
+
+        token = self.__authProvider()
+        endpoint = f'twins/{facility_id}/views'
+        response = self.__post(token, endpoint, view_inputs)
+        return response
     
     def delete_elements(self, model_id: str, keys: List[str], desc: str):
         """
@@ -179,6 +199,15 @@ class TandemClient:
         token = self.__authProvider()
         endpoint = f'twins/{facility_id}'
         return self.__get(token, endpoint)
+    
+    def get_facility_history(self, facility_id: str, inputs: Any) -> Any:
+        """
+        Retuns history for given facility.
+        """
+
+        token = self.__authProvider()
+        endpoint = f'twins/{facility_id}/history'
+        return self.__post(token, endpoint, inputs)
     
     def get_facility_template(self, facility_id: str) -> Any:
         """
@@ -269,18 +298,29 @@ class TandemClient:
         endpoint = f'modeldata/{model_id}/attrs'
         return self.__get(token, endpoint)
     
-    def get_model_history(self, model_id: str, timestamps: List[int], include_changes: bool = False, use_full_keys: bool = False):
+    def get_model_history(self,
+                          model_id: str,
+                          min: int | None = None,
+                          max: int | None = None,
+                          timestamps: List[int] | None = None,
+                          include_changes: bool = False,
+                          use_full_keys: bool = False):
         """
         Returns model changes.
         """
         
         token = self.__authProvider()
         endpoint = f'modeldata/{model_id}/history'
-        inputs = {
-            'timestamps': timestamps,
+        inputs: Dict[str, Any] = {
             'includeChanges': include_changes,
             'useFullKeys': use_full_keys
         }
+        if min is not None:
+            inputs['min'] = min
+        if max is not None:
+            inputs['max'] = max
+        if timestamps is not None:
+            inputs['timestamps'] = timestamps
         response = self.__post(token, endpoint, inputs)
         return response
     
@@ -533,6 +573,16 @@ class TandemClient:
         with open(file_path, 'wb') as file:
             file.write(response.content)
         return
+
+    def upload_document(self, facility_id: str, file_inputs: Any) -> Any:
+        """
+        Starts document upload for given facility.
+        """
+        
+        token = self.__authProvider()
+        endpoint = f'twins/{facility_id}/documents/upload'
+        result = self.__post(token, endpoint, file_inputs)
+        return result
     
     def __get(self, token: str, endpoint: str, params: Dict[str, Any] | None = None) -> Any:
         headers = {
