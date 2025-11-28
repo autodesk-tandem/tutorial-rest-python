@@ -40,7 +40,7 @@ def main():
         # STEP 4 - get streams
         streams = client.get_streams(default_model_id)
         # STEP 5 - get last readings for each stream
-        keys = list(map(lambda stream: stream.get(QC_KEY), streams))
+        keys = [stream.get(QC_KEY) for stream in streams]
         data = client.get_stream_last_reading(default_model_id, keys)
         for key in data:
             # STEP 6 - read stream name
