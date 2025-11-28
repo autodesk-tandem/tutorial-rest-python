@@ -57,7 +57,7 @@ def main():
         # in one call rather than query server for each element
         for model_id in model_stream_map:
             items = model_stream_map[model_id]
-            keys = list(map(lambda item: item.get('key'), items))
+            keys = [item.get('key') for item in items]
             element_data = client.get_elements(f'urn:adsk.dtm:{model_id}', keys)
             for item in items:
                 stream = streams[item.get('stream_index')]

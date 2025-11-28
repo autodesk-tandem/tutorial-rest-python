@@ -35,7 +35,7 @@ def main():
         # STEP 3 - get streams
         streams = client.get_streams(default_model_id)
         # we need to convert stream keys to fully qualified key
-        keys = list(map(lambda stream: stream.get(QC_KEY), streams))
+        keys = [stream.get(QC_KEY) for stream in streams]
         # STEP 4 - get streams secrets
         data = client.get_stream_secrets(default_model_id, keys)
         # STEP 5 - print out stream name + secret
