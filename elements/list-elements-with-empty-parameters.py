@@ -13,8 +13,8 @@ from common.constants import (
     QC_OCLASSIFICATION,
     QC_NAME,
     QC_ONAME,
-    QC_TANDEMCATEGORY,
-    QC_OTANDEMCATEGORY
+    QC_TANDEM_CATEGORY,
+    QC_OTANDEM_CATEGORY
 )
 
 from common.utils import match_classification
@@ -50,13 +50,20 @@ def main():
                 name = element.get(QC_ONAME) or element.get(QC_NAME)
                 # STEP 5 - find parameters related to classification or Tandem category
                 classification = element.get(QC_OCLASSIFICATION) or element.get(QC_CLASSIFICATION)
-                category = element.get(QC_OTANDEMCATEGORY) or element.get(QC_TANDEMCATEGORY)
+                category = element.get(QC_OTANDEM_CATEGORY) or element.get(QC_TANDEM_CATEGORY)
                 class_parameters = None
-
                 if classification is not None:
-                    class_parameters = list(filter(lambda item: any(match_classification(classification, c) for c in item.get('applicationFilters', {}).get('userClass', {})), pset.get('parameters')))
+                    class_parameters = [
+                        item
+                        for item in pset.get('parameters', [])
+                        if any(match_classification(classification, c) for c in item.get('applicationFilters', {}).get('userClass', {}))
+                    ]
                 elif category is not None:
-                    class_parameters = list(filter(lambda item: any(match_classification(category, c) for c in item.get('applicationFilters', {}).get('tandemCategory', {})), pset.get('parameters')))
+                    class_parameters = [
+                        item
+                        for item in pset.get('parameters', [])
+                        if any(match_classification(category, c) for c in item.get('applicationFilters', {}).get('tandemCategory', {}))
+                    ]
                 if class_parameters is None or len(class_parameters) == 0:
                     continue
                 # STEP 6 - check parameters with empty value
