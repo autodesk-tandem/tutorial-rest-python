@@ -111,9 +111,9 @@ def main():
                     asset_ids.append(asset_key)
                 model_rooms.extend(asset_rooms)
         # STEP 6 - process rooms and create map between room and level
-        model_ids = set(map(lambda item: item[0], model_rooms))
+        model_ids = {model_id for model_id, _ in model_rooms}
         for model_id in model_ids:
-            room_ids = set(map(lambda item: item[1], filter(lambda item: item[0] == model_id, model_rooms)))
+            room_ids = {room_key for id, room_key in model_rooms if id == model_id}
             rooms = client.get_elements(model_id, list(room_ids), [ COLUMN_FAMILIES_STANDARD, COLUMN_FAMILIES_REFS ])
             level_ids = set()
 
