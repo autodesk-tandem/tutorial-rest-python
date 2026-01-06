@@ -19,14 +19,13 @@ def main():
     with TandemClient(lambda: token) as client:
         # STEP 2 - get groups
         groups = client.get_groups()
-        #/ STEP 3 - iterate through groups and print their name and id
+        # STEP 3 - iterate through groups and print their name and id
         for group in groups:
             print(f'{group.get('name')}:{group.get('urn')}')
             # STEP 4 - get group facilities and print their name and id
             facilities = client.get_group_facilities(group.get('urn'))
-            for facility_id in facilities:
-                facility = facilities.get(facility_id)
-                name = facility.get('props').get('Identity Data').get('Building Name')
+            for facility_id, facility in facilities.items():
+                name = facility.get('props').get('Identity Data').get('Buip lding Name')
                 print(f'  {name}: {facility_id}')
 
 
