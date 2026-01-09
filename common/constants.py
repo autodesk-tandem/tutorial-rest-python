@@ -145,6 +145,12 @@ SYSTEM_CLASS_NAMES = [
 	'Storm'
 ]
 
+# category related constants
+TC_LEVELS = 'L.Lv'
+TC_ROOMS = 'L.Rm'
+TC_SENSORS = 'Q.Se'
+TC_TICKET = 'I.Ti'
+
 # history related constants
 HC_CLIENT_ID = 'c'
 HC_CORRELATION = 'i'
