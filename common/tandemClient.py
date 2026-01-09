@@ -422,7 +422,7 @@ class TandemClient:
         result = self.__post(token, endpoint, inputs)
         return result
     
-    def get_streams(self, model_id: str, column_families: List[str] = [ COLUMN_FAMILIES_STANDARD ]) -> Any:
+    def get_streams(self, model_id: str, column_families: List[str] = [ COLUMN_FAMILIES_STANDARD, COLUMN_FAMILIES_REFS, COLUMN_FAMILIES_XREFS ]) -> Any:
         """
         Returns stream elements from given model.
         """
@@ -498,7 +498,7 @@ class TandemClient:
                 results.append(elem)
         return results
     
-    def get_tickets(self, model_id: str, column_families: List[str] = [ COLUMN_FAMILIES_STANDARD, COLUMN_FAMILIES_XREFS ]) -> Any:
+    def get_tickets(self, model_id: str, column_families: List[str] = [ COLUMN_FAMILIES_STANDARD, COLUMN_FAMILIES_REFS,COLUMN_FAMILIES_XREFS ]) -> Any:
         """
         Returns ticket elements from given model.
         """
