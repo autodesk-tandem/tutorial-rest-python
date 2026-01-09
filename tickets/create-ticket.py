@@ -20,6 +20,7 @@ from common.constants import (
     COLUMN_NAMES_PARENT,
     COLUMN_NAMES_PRIORITY,
     COLUMN_NAMES_ROOMS,
+    COLUMN_NAMES_TANDEM_CATEGORY,
     ELEMENT_FLAGS_TICKET,
     MUTATE_ACTIONS_INSERT,
     QC_ELEMENT_FLAGS,
@@ -29,7 +30,8 @@ from common.constants import (
     QC_NAME,
     QC_ONAME,
     QC_XROOMS,
-    QC_OXROOMS
+    QC_OXROOMS,
+    TC_TICKET
 )
 from common.encoding import decode_xref_key, to_full_key, to_xref_key
 from common.utils import get_default_model, is_logical_element
@@ -91,7 +93,6 @@ def main():
             parent_level_id = parent_element.get(QC_OLEVEL, None)
             if parent_level_id is None:
                 parent_level_id = parent_element.get(QC_LEVEL, None)
-
             if parent_level_id is not None:
                 parent_level = client.get_element(model_id, parent_level_id, column_families=[COLUMN_FAMILIES_STANDARD])
                 level_name = parent_level.get(QC_ONAME, None)
@@ -118,22 +119,29 @@ def main():
             ],
             [
                 MUTATE_ACTIONS_INSERT,
-                COLUMN_FAMILIES_XREFS,
-                COLUMN_NAMES_PARENT,
-                xref
+                COLUMN_FAMILIES_STANDARD,
+                COLUMN_NAMES_TANDEM_CATEGORY,
+                TC_TICKET
             ],
             [
                 MUTATE_ACTIONS_INSERT,
                 COLUMN_FAMILIES_STANDARD,
                 COLUMN_NAMES_PRIORITY,
-                'Low'
+                'Medium'
             ],
             [
                 MUTATE_ACTIONS_INSERT,
                 COLUMN_FAMILIES_STANDARD,
                 COLUMN_NAMES_OPEN_DATE,
                 datetime.now(timezone.utc).date().isoformat()
+            ],
+            [
+                MUTATE_ACTIONS_INSERT,
+                COLUMN_FAMILIES_XREFS,
+                COLUMN_NAMES_PARENT,
+                xref
             ]
+            
         ]
         if rooms_ids is not None:
             mutations.append([
