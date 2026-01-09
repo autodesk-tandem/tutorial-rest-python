@@ -58,6 +58,30 @@ def decode_xref_key(key: str) -> Tuple[str, str]:
     element_key = __make_web_safe(base64.b64encode(key_buff).decode('utf-8'))
     return model_id, element_key
 
+def decode_xref_key_array(key: str) -> Tuple[List[str], List[str]]:
+    """ Decodes array of xref keys to model ids and element keys."""
+
+    model_ids = []
+    element_keys = []
+
+    txt = __b64_prepare(key)
+    buff = base64.b64decode(txt)
+    model_buff = bytearray(MODEL_ID_SIZE)
+    offset = 0
+    while offset < len(buff):
+        size = len(buff) - offset
+        if size < MODEL_ID_SIZE + ELEMENT_ID_WITH_FLAGS_SIZE:
+            break
+        model_buff[0:] = buff[offset:offset + MODEL_ID_SIZE]
+        model_id = __make_web_safe(base64.b64encode(model_buff).decode('utf-8'))
+        key_buff = bytearray(MODEL_ID_SIZE)
+        key_buff[0:] = buff[offset + MODEL_ID_SIZE:offset + MODEL_ID_SIZE + ELEMENT_ID_WITH_FLAGS_SIZE]
+        element_key = __make_web_safe(base64.b64encode(key_buff).decode('utf-8'))
+        model_ids.append(model_id)
+        element_keys.append(element_key)
+        offset += MODEL_ID_SIZE + ELEMENT_ID_WITH_FLAGS_SIZE
+    return model_ids, element_keys
+
 def from_short_key_array(text: str, use_full_keys: bool = False, is_logical: bool = False) -> List[str]:
     """
     Decodes text (local refs) to list of keys. If use_full_keys is set to True then full
