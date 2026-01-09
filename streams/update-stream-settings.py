@@ -42,6 +42,8 @@ def main():
         # STEP 3 - get template for facility and related parameter set
         template = client.get_facility_template(FACILITY_URN)
         pset = next((p for p in template.get('psets') if p.get('name') == template.get('name')), None)
+        if pset is None:
+            raise Exception('Property set not found')
         # STEP 4 - get schema
         schema = client.get_model_schema(default_model_id)
         keys = []
@@ -60,6 +62,8 @@ def main():
             if parameter is None:
                 continue
             parameter_def = next((p for p in schema.get('attributes') if p.get('name') == parameter.get('name')), None)
+            if parameter_def is None:
+                continue
             # STEP 6 - create stream settings for specific parameter. Note this will overwrite existing settings.
             stream_settings = {
                 'thresholds': {
