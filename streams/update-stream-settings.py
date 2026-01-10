@@ -43,7 +43,7 @@ def main():
         template = client.get_facility_template(FACILITY_URN)
         pset = next((p for p in template.get('psets') if p.get('name') == template.get('name')), None)
         if pset is None:
-            raise Exception('Property set not found')
+            raise Exception('No parameter set found for template')
         # STEP 4 - get schema
         schema = client.get_model_schema(default_model_id)
         keys = []
@@ -57,7 +57,11 @@ def main():
                 classification_id = stream.get(QC_CLASSIFICATION, None)
             if classification_id is None:
                 continue
-            class_parameters = list(filter(lambda item: any(match_classification(classification_id, c) for c in item.get('applicationFilters').get('userClass')), pset.get('parameters')))
+            class_parameters = [
+                item
+                for item in pset.get('parameters', [])
+                if any(match_classification(classification_id, c) for c in item.get('applicationFilters', {}).get('userClass', {}))
+            ]
             parameter = next((p for p in class_parameters if p.get('name') == PARAMETER_NAME), None)
             if parameter is None:
                 continue

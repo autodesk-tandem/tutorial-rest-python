@@ -77,7 +77,7 @@ def main():
                     ])
                 if len(mutations) == 0:
                     continue
-                keys = list(itertools.repeat(asset[QC_KEY], len(mutations)))
+                keys = [asset.get(QC_KEY)] * len(mutations)
                 client.mutate_elements(model_id, keys, mutations, 'Update asset properties')
                 print(f'Updated properties: {len(mutations)}')
 

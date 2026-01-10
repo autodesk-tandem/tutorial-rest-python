@@ -46,6 +46,9 @@ def main():
         category_id = 5031 # this refers to IoT Connections category
         classification = CLASSIFICATION_ID
         # iterate through rooms
+        target_room = None
+        target_room_model_id = None
+
         for l in facility.get('links'):
             model_id = l.get('modelId')
             # we need to query for refs because we want to know related level
@@ -55,7 +58,7 @@ def main():
                 target_room = room
                 target_room_model_id = model_id.replace('urn:adsk.dtm:', '')
                 break
-        if target_room is None:
+        if target_room is None or target_room_model_id is None:
             print(f'Room {room_name} not found')
             return
         # STEP 4 - find level. Level with same name should exist in default model.
