@@ -43,8 +43,7 @@ def main():
         template = client.get_facility_template(FACILITY_URN)
         pset = next((p for p in template.get('psets') if p.get('name') == template.get('name')), None)
         if pset is None:
-            print(f'No parameter set found for template')
-            return
+            raise Exception('No parameter set found for template')
         # STEP 4 - get schema
         schema = client.get_model_schema(default_model_id)
         keys = []

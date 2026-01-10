@@ -35,7 +35,7 @@ def main():
             raise Exception('Default model not found')
         default_model_id = default_model.get('modelId')
         # STEP 3 - get streams
-        streams = client.get_streams(default_model_id, [ COLUMN_FAMILIES_STANDARD, COLUMN_FAMILIES_XREFS ])
+        streams = client.get_streams(default_model_id)
         # STEP 4 - get parent data
         stream_data = []
         stream_lookup = {}
