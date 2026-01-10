@@ -61,7 +61,6 @@ def main():
             keys,
             mutations,
             'Close ticket')
-
         print('done')
 
 if __name__ == '__main__':

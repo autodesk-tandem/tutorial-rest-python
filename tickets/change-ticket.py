@@ -59,7 +59,6 @@ def main():
             keys,
             mutations,
             'Change priority')
-
         print('done')
 
 if __name__ == '__main__':
