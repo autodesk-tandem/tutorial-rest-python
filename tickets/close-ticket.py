@@ -4,11 +4,13 @@ This example demonstrates how to close a ticket using REST API.
 It uses 2-legged authentication - this requires that application is added
 to facility as service.
 """
+from datetime import datetime, timezone
+
 from common.auth import create_token
 from common.tandemClient import TandemClient
 from common.constants import (
     COLUMN_FAMILIES_STANDARD,
-    COLUMN_NAMES_PRIORITY,
+    COLUMN_NAMES_CLOSE_DATE,
     MUTATE_ACTIONS_INSERT_IF_DIFFERENT,
     QC_KEY,
     QC_NAME,
@@ -45,19 +47,20 @@ def main():
         # STEP 4 - prepare mutation to set Priority property to new value.
         mutations = []
         keys = []
+        close_date = datetime.now(timezone.utc).date().isoformat()
 
         keys.append(ticket.get(QC_KEY))
         mutations.append([
             MUTATE_ACTIONS_INSERT_IF_DIFFERENT,
             COLUMN_FAMILIES_STANDARD,
-            COLUMN_NAMES_PRIORITY,
-            NEW_PRIORITY
+            COLUMN_NAMES_CLOSE_DATE,
+            close_date
         ])
             # STEP 5 - update elements
         client.mutate_elements(default_model.get('modelId'),
             keys,
             mutations,
-            'Change priority')
+            'Close ticket')
 
         print('done')
 

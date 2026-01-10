@@ -4,53 +4,34 @@ This example demonstrates how to change a ticket using REST API.
 It uses 2-legged authentication - this requires that application is added
 to facility as service.
 """
-from datetime import datetime, timezone
-
 from common.auth import create_token
 from common.tandemClient import TandemClient
 from common.constants import (
-    COLUMN_FAMILIES_REFS,
     COLUMN_FAMILIES_STANDARD,
-    COLUMN_FAMILIES_XREFS,
-    COLUMN_NAMES_ELEMENT_FLAGS,
-    COLUMN_NAMES_LEVEL,
-    COLUMN_NAMES_NAME,
-    COLUMN_NAMES_OPEN_DATE,
-    COLUMN_NAMES_PARENT,
     COLUMN_NAMES_PRIORITY,
-    COLUMN_NAMES_ROOMS,
-    COLUMN_NAMES_TANDEM_CATEGORY,
-    ELEMENT_FLAGS_TICKET,
-    MUTATE_ACTIONS_INSERT,
-    QC_ELEMENT_FLAGS,
+    MUTATE_ACTIONS_INSERT_IF_DIFFERENT,
     QC_KEY,
-    QC_LEVEL,
-    QC_OLEVEL,
     QC_NAME,
-    QC_ONAME,
-    QC_XROOMS,
-    QC_OXROOMS,
-    TC_TICKET
+    QC_ONAME
 )
-from common.encoding import decode_xref_key, to_full_key, to_xref_key
-from common.utils import get_default_model, is_logical_element
+from common.utils import get_default_model
 
 # update values below according to your environment
-APS_CLIENT_ID = 'NpSUGahm5tM6qcxACmeCGvcGa6wFQ8L3'
-APS_CLIENT_SECRET = 'GvmZPm0LMPacmxui'
-FACILITY_URN = 'urn:adsk.dtt:utDRTilBRAiwnPQ_HVR55Q'
+APS_CLIENT_ID = 'YOUR_CLIENT_ID'
+APS_CLIENT_SECRET = 'YOUR_CLIENT_SECRET'
+FACILITY_URN = 'YOUR_FACILITY_URN'
 
 # Specify ticket name according to your conventions
-TICKET_NAME = 'T2.001'
-# Name of the asset to search for
+TICKET_NAME = 'Ticket 01'
+# Name of new priority
 NEW_PRIORITY = 'High'
 
 def main():
     # Start
     # STEP 1 - obtain token. The sample uses 2-legged token but it would also work
     # with 3-legged token assuming that user has access to the facility
-    token = create_token(APS_CLIENT_ID, APS_CLIENT_SECRET, ['data:read', 'data:write'], env='stg')
-    with TandemClient(lambda: token, env='stg') as client:
+    token = create_token(APS_CLIENT_ID, APS_CLIENT_SECRET, ['data:read', 'data:write'])
+    with TandemClient(lambda: token) as client:
         # STEP 2 - get facility and default model.
         facility = client.get_facility(FACILITY_URN)
         default_model = get_default_model(FACILITY_URN, facility)
@@ -68,7 +49,7 @@ def main():
 
         keys.append(ticket.get(QC_KEY))
         mutations.append([
-            MUTATE_ACTIONS_INSERT,
+            MUTATE_ACTIONS_INSERT_IF_DIFFERENT,
             COLUMN_FAMILIES_STANDARD,
             COLUMN_NAMES_PRIORITY,
             NEW_PRIORITY
