@@ -14,12 +14,19 @@ def get_default_model(facility_id: str, facility: Any) -> Any | None:
     Returns default model for given facility.
     """
     
-    default_model_id = facility_id.replace('urn:adsk.dtt:', 'urn:adsk.dtm:')
+    default_model_id = get_default_model_id(facility_id)
     for link in facility.get('links'):
         model_id = link.get('modelId')
         if model_id == default_model_id:
             return link
     return None
+
+def get_default_model_id(facility_id: str) -> str:
+    """
+    Returns id of default model for given facility.
+    """
+    
+    return facility_id.replace('urn:adsk.dtt:', 'urn:adsk.dtm:')
 
 def is_logical_element(element_flags: int) -> bool:
     """
