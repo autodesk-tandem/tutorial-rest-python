@@ -5,6 +5,7 @@ from .constants import (
     ELEMENT_FLAGS_LEVEL,
     ELEMENT_FLAGS_STREAM,
     ELEMENT_FLAGS_SYSTEM,
+    ELEMENT_FLAGS_TICKET,
     SYSTEM_CLASS_NAMES
 )
 
@@ -13,12 +14,18 @@ def get_default_model(facility_id: str, facility: Any) -> Any | None:
     Returns default model for given facility.
     """
     
-    default_model_id = facility_id.replace('urn:adsk.dtt:', 'urn:adsk.dtm:')
-    for link in facility.get('links'):
-        model_id = link.get('modelId')
-        if model_id == default_model_id:
-            return link
-    return None
+    default_model_id = get_default_model_id(facility_id)
+    return next(
+        (link for link in facility.get('links', []) if link.get('modelId') == default_model_id),
+        None
+    )
+
+def get_default_model_id(facility_id: str) -> str:
+    """
+    Returns id of default model for given facility.
+    """
+    
+    return facility_id.replace('urn:adsk.dtt:', 'urn:adsk.dtm:')
 
 def is_logical_element(element_flags: int) -> bool:
     """
@@ -28,7 +35,8 @@ def is_logical_element(element_flags: int) -> bool:
     return (element_flags == ELEMENT_FLAGS_STREAM or
             element_flags == ELEMENT_FLAGS_LEVEL or
             element_flags == ELEMENT_FLAGS_GENERIC_ASSET or
-            element_flags == ELEMENT_FLAGS_SYSTEM)
+            element_flags == ELEMENT_FLAGS_SYSTEM or
+            element_flags == ELEMENT_FLAGS_TICKET)
 
 def match_classification(a: str, b: str) -> bool:
     """

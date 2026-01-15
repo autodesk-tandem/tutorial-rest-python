@@ -4,6 +4,7 @@ This example demonstrates how to list tickets from facility using REST API.
 It uses 2-legged authentication - this requires that application is added
 to facility as service.
 """
+from collections import defaultdict
 from common.auth import create_token
 from common.tandemClient import TandemClient
 from common.constants import (
@@ -12,7 +13,7 @@ from common.constants import (
     QC_PRIORITY,
     QC_XPARENT
 )
-from common.encoding import decode_xref_key
+from common.encoding import decode_xref_key_array
 from common.utils import get_default_model
 
 # update values below according to your environment
@@ -48,12 +49,17 @@ def main():
             xref = ticket.get(QC_XPARENT, None)
 
             if xref is not None:
-                [ model_id, element_id ] = decode_xref_key(xref)
-
-                element = client.get_element(model_id, element_id)
-                if element is not None:
-                    element_name = element.get(QC_ONAME, None) or element.get(QC_NAME, None)
-                    print(f'  Element: {element_name}');
+                # there can be more than one linked asset - collect them by model
+                model_to_elements: dict[str, set[str]] = defaultdict(set)
+                
+                model_ids, element_ids = decode_xref_key_array(xref)
+                for model_id, element_id in zip(model_ids, element_ids):
+                    model_to_elements[model_id].add(element_id)
+                for model_id, element_ids in model_to_elements.items():
+                    elements = client.get_elements(model_id, [*element_ids])
+                    for element in elements:
+                        element_name = element.get(QC_ONAME, None) or element.get(QC_NAME, None)
+                        print(f'  Linked Asset: {element_name}')
         
 
 if __name__ == '__main__':

@@ -570,6 +570,8 @@ class TandemClient:
             'Authorization': f'Bearer {token}'
         }
         response = requests.get(url, headers=headers)
+        if not response.ok:
+            raise Exception(f'Error while downloading document: {response.status_code} - {response.text}')
         with open(file_path, 'wb') as file:
             file.write(response.content)
         return
@@ -592,7 +594,7 @@ class TandemClient:
             headers['Region'] = self.__region
         url = f'{self.__base_url}/{endpoint}'
         response = requests.get(url, headers=headers, params=params)
-        if response.status_code != 200:
+        if not response.ok:
             raise Exception(f'Error while calling Tandem API: {response.status_code} - {response.text}')
         return response.json()
     
@@ -605,10 +607,8 @@ class TandemClient:
             headers['Region'] = self.__region
         url = f'{self.__base_url}/{endpoint}'
         response = requests.post(url, headers=headers, json=data, params=params)
-        if response.status_code == 202 or response.status_code == 204:
-            return
-        if response.status_code != 200:
-            raise Exception(f'Error while calling Tandem API: {response.status_code} - {response.text}')
-        if len(response.content) == 0:
-            return None
-        return response.json()
+        if response.ok:
+            if len(response.content) == 0:
+                return None
+            return response.json()
+        raise Exception(f'Error while calling Tandem API: {response.status_code} - {response.text}')
