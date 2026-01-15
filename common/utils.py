@@ -15,11 +15,10 @@ def get_default_model(facility_id: str, facility: Any) -> Any | None:
     """
     
     default_model_id = get_default_model_id(facility_id)
-    for link in facility.get('links'):
-        model_id = link.get('modelId')
-        if model_id == default_model_id:
-            return link
-    return None
+    return next(
+        (link for link in facility.get('links', []) if link.get('modelId') == default_model_id),
+        None
+    )
 
 def get_default_model_id(facility_id: str) -> str:
     """
