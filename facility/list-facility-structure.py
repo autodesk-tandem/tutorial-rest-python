@@ -19,6 +19,7 @@ from common.constants import (
     QC_ROOMS,
     QC_XROOMS,
 )
+from common.utils import get_default_model_id
 
 # update values below according to your environment
 APS_CLIENT_ID = 'YOUR_CLIENT_ID'
@@ -30,8 +31,7 @@ def is_default_model(facility_id: str, model_id: str) -> bool:
     Checks if model is default model for the facility.
     """
 
-    default_model_id = facility_id.replace('urn:adsk.dtt:', 'urn:adsk.dtm:')
-
+    default_model_id = get_default_model_id(facility_id)
     return default_model_id == model_id
 
 def get_levels(data) -> list:
