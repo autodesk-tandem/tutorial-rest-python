@@ -5,6 +5,7 @@ from .constants import (
     ELEMENT_FLAGS_LEVEL,
     ELEMENT_FLAGS_STREAM,
     ELEMENT_FLAGS_SYSTEM,
+    ELEMENT_FLAGS_TICKET,
     SYSTEM_CLASS_NAMES
 )
 
@@ -28,7 +29,8 @@ def is_logical_element(element_flags: int) -> bool:
     return (element_flags == ELEMENT_FLAGS_STREAM or
             element_flags == ELEMENT_FLAGS_LEVEL or
             element_flags == ELEMENT_FLAGS_GENERIC_ASSET or
-            element_flags == ELEMENT_FLAGS_SYSTEM)
+            element_flags == ELEMENT_FLAGS_SYSTEM or
+            element_flags == ELEMENT_FLAGS_TICKET)
 
 def match_classification(a: str, b: str) -> bool:
     """
