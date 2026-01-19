@@ -8,8 +8,8 @@ import time
 
 # update values below according to your environment
 # to obtain your own URL and token use Webhook Integration command under Streams
-WEBHOOK_URL = 'https://tandem.autodesk.com/api/v1/timeseries/models/urn:adsk.dtm:mprWPFSnT82G1ILC_4dWgA/webhooks/generic'
-AUTH = 'Basic OlFHOHAybC0xUTZlVXVLWndyd0lWYkE='
+WEBHOOK_URL = 'YOUR_WEBHOOK_URL'
+AUTH = 'YOUR_WEBHOOK_TOKEN'
 
 def main():
     # Start
