@@ -9,7 +9,7 @@ import time
 # update values below according to your environment
 # to obtain your own ingestion URL use Copy link button in the UI
 # next to stream name
-STREAM_URL = 'https://:BUX3cp5qQ4euLYsgJu2kjQ@tandem.autodesk.com/api/v1/timeseries/models/urn:adsk.dtm:mprWPFSnT82G1ILC_4dWgA/streams/AQAAAIh2FNrZGEnyoEzp-cMEzIcAAAAA'
+STREAM_URL = 'YOUR_STREAM_URL'
 
 def main():
     # Start
