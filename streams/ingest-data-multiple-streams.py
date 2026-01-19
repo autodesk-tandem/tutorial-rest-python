@@ -61,7 +61,9 @@ def main():
     define_own_timestamp = False
 
     if define_own_timestamp:
-        payload['timestamp'] = int(round(time.time() * 1000))
+        for item in payload:
+            # example using "timestamp" field with epoch time in milliseconds
+            item['timestamp'] = int(round(time.time() * 1000))
 
     # STEP 2: Make sure auth token is provided and POST the data
     # When ingesting data to individual streams, each stream has it's own secret
