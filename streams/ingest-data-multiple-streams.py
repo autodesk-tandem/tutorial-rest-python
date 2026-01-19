@@ -8,8 +8,8 @@ import time
 
 # update values below according to your environment
 # to obtain your own URL and token use Webhook Integration command under Streams
-WEBHOOK_URL = 'https://tandem.autodesk.com/api/v1/timeseries/models/urn:adsk.dtm:mprWPFSnT82G1ILC_4dWgA/webhooks/generic'
-AUTH = 'Basic OlFHOHAybC0xUTZlVXVLWndyd0lWYkE='
+WEBHOOK_URL = 'YOUR_WEBHOOK_URL'
+AUTH = 'YOUR_WEBHOOK_TOKEN'
 
 def main():
     # Start
@@ -61,7 +61,9 @@ def main():
     define_own_timestamp = False
 
     if define_own_timestamp:
-        payload['timestamp'] = int(round(time.time() * 1000))
+        for item in payload:
+            # example using "timestamp" field with epoch time in milliseconds
+            item['timestamp'] = int(round(time.time() * 1000))
 
     # STEP 2: Make sure auth token is provided and POST the data
     # When ingesting data to individual streams, each stream has it's own secret
