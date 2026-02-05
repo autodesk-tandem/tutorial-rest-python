@@ -7,8 +7,6 @@ It uses 2-legged authentication - this requires athat application is added to fa
 from common.auth import create_token
 from common.tandemClient import TandemClient
 from common.constants import (
-    COLUMN_FAMILIES_STANDARD,
-    COLUMN_FAMILIES_XREFS,
     QC_KEY,
     QC_NAME,
     QC_XPARENT
