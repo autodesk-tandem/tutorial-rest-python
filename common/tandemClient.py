@@ -551,7 +551,7 @@ class TandemClient:
         result = self.__get(token, endpoint)
         return result
     
-    def mutate_elements(self, model_id: str, keys: List[str], mutations, description: str) -> Any:
+    def mutate_elements(self, model_id: str, keys: List[str], mutations, description: str, correlation_id: str | None = None, additional_params: dict | None= None) -> Any:
         """
         Modifies given elements.
         """
@@ -563,6 +563,10 @@ class TandemClient:
             'muts': mutations,
             'desc': description
         }
+        if correlation_id is not None:
+            inputs['correlation_id'] = correlation_id
+        if additional_params is not None:
+            inputs.update(additional_params)
         result = self.__post(token, endpoint, inputs)
         return result
     
