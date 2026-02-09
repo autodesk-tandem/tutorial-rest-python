@@ -82,6 +82,14 @@ def decode_xref_key_array(key: str) -> Tuple[List[str], List[str]]:
         offset += MODEL_ID_SIZE + ELEMENT_ID_WITH_FLAGS_SIZE
     return model_ids, element_keys
 
+def from_element_GUID(guid: str) -> str:
+    """ Converts Revit GUID to short key."""
+
+    txt = guid.replace('-', '')
+    buff = bytes.fromhex(txt)
+    result = __make_web_safe(base64.b64encode(buff).decode('utf-8'))
+    return result
+
 def from_short_key_array(text: str, use_full_keys: bool = False, is_logical: bool = False) -> List[str]:
     """
     Decodes text (local refs) to list of keys. If use_full_keys is set to True then full
@@ -147,7 +155,7 @@ def to_element_GUID(key: str) -> str:
     txt = __b64_prepare(key)
     buff = base64.b64decode(txt)
     if len(buff) == ELEMENT_ID_WITH_FLAGS_SIZE:
-        buff =  buff[4:]
+        buff =  buff[ELEMENT_FLAGS_SIZE:]
     hex = [f'{b:02x}' for b in buff]
     hex_groups = [4, 2, 2, 2, 6, 4]
     pos = 0
@@ -219,6 +227,8 @@ def to_xref_key_array(items: List[Tuple[str, str]]) -> str:
     result = bytearray()
     for item in items:
         model_id, key = item
+        if model_id.startswith('urn:'):
+            model_id = model_id.replace('urn:adsk.dtm:', '')
         model_buff = base64.b64decode(__b64_prepare(model_id))
         element_buff = base64.b64decode(__b64_prepare(key))
         xref = bytearray(MODEL_ID_SIZE + ELEMENT_ID_WITH_FLAGS_SIZE)

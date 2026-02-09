@@ -381,6 +381,26 @@ class TandemClient:
                 results.append(elem)
         return results
     
+    def get_stream_config(self, model_id: str, stream_key: str) -> Any:
+        """
+        Returns stream configuration for given stream key.
+        """
+
+        token = self.__authProvider()
+        endpoint = f'models/{model_id}/stream-configs/{stream_key}'
+        result = self.__get(token, endpoint)
+        return result
+    
+    def get_stream_configs(self, model_id: str) -> Any:
+        """
+        Returns all stream configurations for given model.
+        """
+
+        token = self.__authProvider()
+        endpoint = f'models/{model_id}/stream-configs'
+        result = self.__get(token, endpoint)
+        return result
+
     def get_stream_data(self, model_id: str, key: str, from_date: int | None = None, to_date: int | None = None) -> Any:
         """
         Returns data for given stream. It can be used to get data for given time range (from, to).
@@ -531,7 +551,7 @@ class TandemClient:
         result = self.__get(token, endpoint)
         return result
     
-    def mutate_elements(self, model_id: str, keys: List[str], mutations, description: str) -> Any:
+    def mutate_elements(self, model_id: str, keys: List[str], mutations, description: str, correlation_id: str | None = None, additional_params: dict | None= None) -> Any:
         """
         Modifies given elements.
         """
@@ -543,6 +563,10 @@ class TandemClient:
             'muts': mutations,
             'desc': description
         }
+        if correlation_id is not None:
+            inputs['correlation_id'] = correlation_id
+        if additional_params is not None:
+            inputs.update(additional_params)
         result = self.__post(token, endpoint, inputs)
         return result
     
@@ -575,6 +599,16 @@ class TandemClient:
         with open(file_path, 'wb') as file:
             file.write(response.content)
         return
+    
+    def save_stream_config(self, model_id: str, stream_key: str, inputs: Any) -> Any:
+        """"
+        Saves configuration for given stream.
+        """
+
+        token = self.__authProvider()
+        endpoint = f'models/{model_id}/stream-configs/{stream_key}'
+        result = self.__put(token, endpoint, inputs)
+        return result
 
     def upload_document(self, facility_id: str, file_inputs: Any) -> Any:
         """
@@ -584,6 +618,16 @@ class TandemClient:
         token = self.__authProvider()
         endpoint = f'twins/{facility_id}/documents/upload'
         result = self.__post(token, endpoint, file_inputs)
+        return result
+    
+    def update_stream_configs(self, model_id: str, inputs: Any) -> Any:
+        """
+        Updates configuration for provided streams.
+        """
+        
+        token = self.__authProvider()
+        endpoint = f'models/{model_id}/stream-configs'
+        result = self.__patch(token, endpoint, inputs)
         return result
     
     def __get(self, token: str, endpoint: str, params: Dict[str, Any] | None = None) -> Any:
@@ -598,6 +642,21 @@ class TandemClient:
             raise Exception(f'Error while calling Tandem API: {response.status_code} - {response.text}')
         return response.json()
     
+    def __patch(self, token: str, endpoint: str, data: Any | None = None, params: Dict[str, Any] | None = None) -> Any:
+        headers = {
+            'Authorization': f'Bearer {token}',
+            'Content-Type': 'application/json',
+        }
+        if (self.__region is not None):
+            headers['Region'] = self.__region
+        url = f'{self.__base_url}/{endpoint}'
+        response = requests.patch(url, headers=headers, json=data, params=params)
+        if response.ok:
+            if len(response.content) == 0:
+                return None
+            return response.json()
+        raise Exception(f'Error while calling Tandem API: {response.status_code} - {response.text}')
+    
     def __post(self, token: str, endpoint: str, data: Any | None = None, params: Dict[str, Any] | None = None) -> Any:
         headers = {
             'Authorization': f'Bearer {token}',
@@ -607,6 +666,21 @@ class TandemClient:
             headers['Region'] = self.__region
         url = f'{self.__base_url}/{endpoint}'
         response = requests.post(url, headers=headers, json=data, params=params)
+        if response.ok:
+            if len(response.content) == 0:
+                return None
+            return response.json()
+        raise Exception(f'Error while calling Tandem API: {response.status_code} - {response.text}')
+
+    def __put(self, token: str, endpoint: str, data: Any | None = None, params: Dict[str, Any] | None = None) -> Any:
+        headers = {
+            'Authorization': f'Bearer {token}',
+            'Content-Type': 'application/json',
+        }
+        if (self.__region is not None):
+            headers['Region'] = self.__region
+        url = f'{self.__base_url}/{endpoint}'
+        response = requests.put(url, headers=headers, json=data, params=params)
         if response.ok:
             if len(response.content) == 0:
                 return None
