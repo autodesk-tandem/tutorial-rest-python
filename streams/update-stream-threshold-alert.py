@@ -1,7 +1,7 @@
 """
 This example demonstrates how to apply threshold alert.
 
-It uses 2-legged authentication - this requires athat application is added to facility as service.
+It uses 2-legged authentication - this requires that the application is added to the facility as a service.
 """
 
 from common.auth import create_token
@@ -9,15 +9,14 @@ from common.tandemClient import TandemClient
 from common.utils import get_default_model
 
 # update values below according to your environment
-APS_CLIENT_ID = 'pErXeluFbvApeQYUoA7dnUoA6AoUsEv8'
-APS_CLIENT_SECRET = 'KeTDSuToRPrnsXgw'
-FACILITY_URN = 'urn:adsk.dtt:JTPLuERzTBaLxCXm52PP5Q'
+APS_CLIENT_ID = 'YOUR_CLIENT_ID'
+APS_CLIENT_SECRET = 'YOUR_CLIENT_SECRET'
+FACILITY_URN = 'YOUR_FACILITY_URN'
 
 PARAMETER_NAME = 'Temperature'  # parameter to map in all streams
 ALERT_INTERVAL = 300  # alert evaluation period in seconds
 
 def main():
-    # Start
     # STEP 1 - obtain token. The sample uses 2-legged token but it would also work
     # with 3-legged token assuming that user has access to the facility
     token = create_token(APS_CLIENT_ID, APS_CLIENT_SECRET, ['data:read', 'data:write'])
@@ -28,6 +27,8 @@ def main():
         if default_model is None:
             raise Exception('Default model not found')
         default_model_id = default_model.get('modelId')
+        if not default_model_id:
+            raise Exception('Default model id not found')
         # STEP 3 - get model schema to find property id by its name
         schema = client.get_model_schema(default_model_id)
         prop_def = next((a for a in schema.get('attributes', []) if a.get('name') == PARAMETER_NAME), None)
@@ -41,7 +42,7 @@ def main():
         # Note that we need to update whole configuration, partial update is not supported.
         # We will only update configuration which has threshold for given parameter.
         new_configs = []
-
+        # Mutate configs in-place and submit the updated objects.
         for config in configs:
             settings = config.get('streamSettings', {})
 

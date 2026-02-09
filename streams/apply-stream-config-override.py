@@ -1,7 +1,7 @@
 """
 This example demonstrates how to apply override to stream configuration.
 
-It uses 2-legged authentication - this requires athat application is added to facility as service.
+It uses 2-legged authentication - this requires that the application is added to the facility as a service.
 """
 
 from common.auth import create_token
@@ -23,7 +23,6 @@ PARAMETER_NAME = 'Temperature'  # parameter to map in all streams
 INPUT_PATH = 'temp'  # mapping path in the source data
 
 def main():
-    # Start
     # STEP 1 - obtain token. The sample uses 2-legged token but it would also work
     # with 3-legged token assuming that user has access to the facility
     token = create_token(APS_CLIENT_ID, APS_CLIENT_SECRET, ['data:read', 'data:write'])
@@ -33,14 +32,26 @@ def main():
         default_model = get_default_model(FACILITY_URN, facility)
         if default_model is None:
             raise Exception('Default model not found')
-        default_model_id = default_model.get('modelId')
+        default_model_id = default_model.get('modelId', None)
+        if not default_model_id:
+            raise Exception('Default model id not found')
         # STEP 3 - get streams
         streams = client.get_streams(default_model_id)
         # STEP 4 - find stream by name. Check both name and name override
-        stream = next((s for s in streams if (s.get(QC_ONAME, '').lower() == STREAM_NAME.lower() or s.get(QC_NAME, '').lower() == STREAM_NAME.lower())), None)
+        stream_name_lower = STREAM_NAME.lower()
+        stream = next(
+            (
+                s for s in streams
+                if s.get(QC_ONAME, '').lower() == stream_name_lower
+                or s.get(QC_NAME, '').lower() == stream_name_lower
+            ),
+            None
+        )
         if not stream:
             raise Exception(f'Stream not found: {STREAM_NAME}')
-        stream_key = stream.get(QC_KEY)
+        stream_key = stream.get(QC_KEY, None)
+        if not stream_key:
+            raise Exception('Stream key not found')
         # STEP 5 - get model schema to find property id by its name
         schema = client.get_model_schema(default_model_id)
         prop_def = next((a for a in schema.get('attributes', []) if a.get('name') == PARAMETER_NAME), None)
