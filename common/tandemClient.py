@@ -23,7 +23,8 @@ from .constants import (
     ELEMENT_FLAGS_TICKET,
     MUTATE_ACTIONS_DELETE_ROW,
     MUTATE_ACTIONS_INSERT,
-    QC_ELEMENT_FLAGS
+    QC_ELEMENT_FLAGS,
+    QC_IS_ASSET
 )
 
 class TandemClient:
@@ -508,13 +509,8 @@ class TandemClient:
         for elem in data:
             if not isinstance(elem, dict):
                 continue
-            keys = elem.keys()
-            custom_props = []
-
-            for k in keys:
-                if k.startswith('z:'):
-                    custom_props.append(k)
-            if len(custom_props) > 0:
+            is_asset = elem.get(QC_IS_ASSET, None)
+            if is_asset:
                 results.append(elem)
         return results
     
