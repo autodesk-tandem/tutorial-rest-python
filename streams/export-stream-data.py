@@ -139,6 +139,10 @@ def main():
                     row[column_name] = value
             print(f'  Total values: {count}')
         # STEP 8 - export to CSV file using pandas. Timestamps are converted to human-readable format in the 'timestamp' column.
+        # Output format:
+        #   timestamp,            Sensor A - Temperature, Sensor B - Temperature
+        #   2026-01-01 00:00:00,  20.4,                   21.3
+        #   2026-01-01 01:00:00,  20.6,
         if rows_by_timestamp:
             df = pd.DataFrame.from_dict(rows_by_timestamp, orient='index')
             df.index.name = 'timestamp_s'
