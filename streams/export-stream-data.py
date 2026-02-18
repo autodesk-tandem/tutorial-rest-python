@@ -71,7 +71,7 @@ def main():
         prop_defs_by_id = {p.get('id'): p for p in schema.get('attributes', [])}
         streams = client.get_streams(default_model_id)
         stream_configs = client.get_stream_configs(default_model_id)
-        # STEP 4 -Find streams that have the target parameter configured
+        # STEP 4 - Find streams that have the target parameter configured
         # Iterate through stream configurations and collect:
         # - stream IDs (elements with sensors/data)
         # - property definitions for the parameter we want to export
@@ -132,6 +132,7 @@ def main():
                     continue
                 param_name = prop_defs[prop_id].get('name') or prop_id
                 column_name = f'{stream_name} - {param_name}'
+                # returned timestamps are in seconds
                 timestamps = expand_values(item.get('t', []))
                 values = expand_values(item.get('v', []))
                 count += len(values)
