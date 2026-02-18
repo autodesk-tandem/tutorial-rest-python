@@ -68,6 +68,7 @@ def main():
         default_model_id = default_model.get('modelId')
         # STEP 3 - get model schema, streams, and stream configurations
         schema = client.get_model_schema(default_model_id)
+        prop_defs_by_id = {p.get('id'): p for p in schema.get('attributes', [])}
         streams = client.get_streams(default_model_id)
         stream_configs = client.get_stream_configs(default_model_id)
         # STEP 4 -Find streams that have the target parameter configured
@@ -85,7 +86,7 @@ def main():
             if not mapping:
                 continue
             for prop_id in mapping:
-                prop_def = next((a for a in schema.get('attributes', []) if a.get('id') == prop_id), None)
+                prop_def = prop_defs_by_id.get(prop_id, None)
                 if not prop_def:
                     continue
                 if prop_def.get('name') == PARAMETER_NAME:
