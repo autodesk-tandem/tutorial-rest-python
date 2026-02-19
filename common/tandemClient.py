@@ -566,7 +566,7 @@ class TandemClient:
         result = self.__post(token, endpoint, inputs)
         return result
     
-    def query_stream_data(self, model_id: str, keys: list[str], attrs: list[str] | None = None, use_delta: bool = True, from_date: int | None = None, to_date: int | None = None) -> Any:
+    def query_stream_data(self, model_id: str, keys: list[str], attrs: list[str] | None = None, from_date: int | None = None, to_date: int | None = None, use_delta: bool = True) -> Any:
         """
         Returns data for given stream and optionally for given attributes. It can be used to get data for given time range (from, to).
         """
