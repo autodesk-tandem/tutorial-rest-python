@@ -75,7 +75,7 @@ def main():
         # Iterate through stream configurations and collect:
         # - stream IDs (elements with sensors/data)
         # - property definitions for the parameter we want to export
-        stream_ids: list[str] = []
+        stream_ids = set()
         prop_defs: dict[str, dict] = {}
 
         for stream_config in stream_configs:
@@ -91,9 +91,10 @@ def main():
                     continue
                 if prop_def.get('name') == PARAMETER_NAME:
                     prop_defs[prop_id] = prop_def
-                    stream_ids.append(stream_config.get('elementId'))
+                    stream_ids.add(stream_config.get('elementId'))
         if len(stream_ids) == 0:
-            raise Exception(f'Warning: No streams found with parameter "{PARAMETER_NAME}"')
+            print(f'Warning: No streams found with parameter "{PARAMETER_NAME}"')
+            return
         # STEP 5 - calculate from and to dates in milliseconds.
         start_date = int(
             datetime.strptime(START_DATE, '%Y-%m-%d')
@@ -108,13 +109,15 @@ def main():
         # STEP 6 - query stream data for selected stream IDs, collect values in a dictionary (key = timestamp, value = dict of column name to value)
         rows_by_timestamp: dict[int, dict[str, float]] = {}
 
+        print(f'Streams found: {len(stream_ids)}')
         for stream_id in stream_ids:
             prop_ids = prop_defs.keys()
             stream_data = client.query_stream_data(default_model_id,
                                                    [stream_id],
                                                    attrs=list(prop_ids),
                                                    from_date=start_date,
-                                                   to_date=end_date)
+                                                   to_date=end_date,
+                                                   use_delta=True)
             if len(stream_data) == 0:
                 continue
             # STEP 7 - find stream to get stream name for the current stream ID
