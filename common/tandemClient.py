@@ -566,6 +566,28 @@ class TandemClient:
         result = self.__post(token, endpoint, inputs)
         return result
     
+    def query_stream_data(self, model_id: str, keys: list[str], attrs: list[str] | None = None, from_date: int | None = None, to_date: int | None = None, use_delta: bool = False) -> Any:
+        """
+        Returns data for given stream and optionally for given attributes. It can be used to get data for given time range (from, to).
+        """
+    
+        token = self.__authProvider()
+        endpoint = f'timeseries/models/{model_id}/querystreamsdata'
+        search_params = {
+            'delta': 1 if use_delta else 0
+        }
+        if from_date is not None:
+            search_params['from'] = from_date
+        if to_date is not None:
+            search_params['to'] = to_date
+        inputs = {
+            'keys': keys
+        }
+        if attrs is not None and len(attrs) > 0:
+            inputs['attrs'] = attrs
+        result = self.__post(token, endpoint, inputs, search_params)
+        return result
+    
     def reset_stream_secrets(self, model_id, stream_ids: List[str], hard_reset: bool = False) -> Any:
         """
         Resets secrets for given streams.
