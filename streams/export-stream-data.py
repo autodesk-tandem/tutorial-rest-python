@@ -40,20 +40,6 @@ END_DATE = '2026-01-31' # End date (YYYY-MM-DD format)
 OUTPUT_CSV = 'exported-stream-data.csv' # Output file name
 
 
-def expand_values(values: list) -> list:
-    """
-    Utility function to expand values when they are stored as deltas.
-    The first value is treated as absolute value, the rest of values are treated as deltas
-    from the previous value.
-    """
-
-    if not values:
-        return []
-    result = [values[0]]
-    for delta in values[1:]:
-        result.append(result[-1] + delta)
-    return result
-
 def main():
     # Start
     # STEP 1 - obtain token. The sample uses 2-legged token but it would also work
@@ -116,8 +102,7 @@ def main():
                                                    [stream_id],
                                                    attrs=list(prop_ids),
                                                    from_date=start_date,
-                                                   to_date=end_date,
-                                                   use_delta=True)
+                                                   to_date=end_date)
             if len(stream_data) == 0:
                 continue
             # STEP 7 - find stream to get stream name for the current stream ID
@@ -135,12 +120,13 @@ def main():
                     continue
                 param_name = prop_defs[prop_id].get('name') or prop_id
                 column_name = f'{stream_name} - {param_name}'
-                # returned timestamps are in seconds
-                timestamps = expand_values(item.get('t', []))
-                values = expand_values(item.get('v', []))
+                timestamps = item.get('t', [])
+                values = item.get('v', [])
                 count += len(values)
                 for timestamp, value in zip(timestamps, values):
-                    row = rows_by_timestamp.setdefault(timestamp, {})
+                    # returned timestamps are in milliseconds, group values by second to avoid having
+                    # too many rows in the output (you can adjust this as needed)
+                    row = rows_by_timestamp.setdefault(timestamp // 1000, {})
                     row[column_name] = value
             print(f'  Total values: {count}')
         # STEP 8 - export to CSV file using pandas. Timestamps are converted to human-readable format in the 'timestamp' column.
