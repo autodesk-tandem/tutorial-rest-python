@@ -1,5 +1,15 @@
 from enum import StrEnum
 
+class AccessLevel(StrEnum):
+	READ = 'Read'
+	READ_WRITE = 'ReadWrite'
+	MANAGE = 'Manage'
+	NONE = 'None'
+
+class Environment(StrEnum):
+	PROD = 'prod'
+	STG = 'stg'
+
 class Region(StrEnum):
     """
     Enum for region types.
@@ -18,6 +28,7 @@ ELEMENT_FLAGS_SIMPLE_ELEMENT = 0x00000000
 ELEMENT_FLAGS_ROOM = 0x00000005
 ELEMENT_FLAGS_FAMILY_TYPE = 0x01000000
 ELEMENT_FLAGS_LEVEL = 0x01000001
+ELEMENT_FLAGS_DOCUMENT_ROOT = 0x01000002
 ELEMENT_FLAGS_STREAM = 0x01000003
 ELEMENT_FLAGS_SYSTEM = 0x01000004
 ELEMENT_FLAGS_GENERIC_ASSET = 0x01000005
@@ -157,6 +168,7 @@ SYSTEM_CLASS_NAMES = [
 ]
 
 # category related constants
+TC_FACILITY = 'L.Fa'
 TC_LEVELS = 'L.Lv'
 TC_ROOMS = 'L.Rm'
 TC_SENSORS = 'Q.Se'
@@ -170,3 +182,6 @@ HC_KEYS = 'k'
 HC_OPERATION = 'o'
 HC_TIMESTAMP = 't'
 HC_USERNAME = 'n'
+
+# Revit related constants
+RC_LEVELS = 240
