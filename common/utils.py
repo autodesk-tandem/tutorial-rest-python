@@ -8,6 +8,7 @@ from .constants import (
     ELEMENT_FLAGS_STREAM,
     ELEMENT_FLAGS_SYSTEM,
     ELEMENT_FLAGS_TICKET,
+    ELEMENT_FLAGS_FAMILY_TYPE,
     ELEMENT_ID_SIZE,
     SYSTEM_CLASS_NAMES
 )
@@ -48,6 +49,7 @@ def is_logical_element(element_flags: int) -> bool:
             element_flags == ELEMENT_FLAGS_LEVEL or
             element_flags == ELEMENT_FLAGS_GENERIC_ASSET or
             element_flags == ELEMENT_FLAGS_SYSTEM or
+            element_flags == ELEMENT_FLAGS_FAMILY_TYPE or
             element_flags == ELEMENT_FLAGS_TICKET or
             element_flags == ELEMENT_FLAGS_DOCUMENT_ROOT)
 
