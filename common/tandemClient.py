@@ -1,4 +1,4 @@
-from typing import Any, Callable, Dict, List, Literal
+from typing import Any, Callable, Dict, List
 import requests
 
 from .constants import (
@@ -24,13 +24,15 @@ from .constants import (
     MUTATE_ACTIONS_DELETE_ROW,
     MUTATE_ACTIONS_INSERT,
     QC_ELEMENT_FLAGS,
-    QC_IS_ASSET
+    QC_IS_ASSET,
+    AccessLevel,
+    Environment
 )
 
 class TandemClient:
     """ A simple wrapper for Tandem Data API """
 
-    def __init__(self, callback: Callable[..., str], region: str | None = None, env: Literal['prod', 'stg'] = 'prod') -> None:
+    def __init__(self, callback: Callable[..., str], region: str | None = None, env: Environment = Environment.PROD) -> None:
         """
         Creates new instance of TandemClient.
         """
@@ -49,6 +51,32 @@ class TandemClient:
     
     def __exit__(self, *args: Any)-> None:
         pass
+
+    def add_facility_user(self, facility_id: str, user_email: str, access_level: AccessLevel) -> None:
+        """"
+        Adds user to the facility.
+        """
+
+        token = self.__authProvider()
+        input = {
+            'accessLevel': access_level
+        }
+        endpoint = f'twins/{facility_id}/users/{user_email}'
+        response = self.__put(token, endpoint, input)
+        return response
+
+    def add_group_user(self, group_id: str, user_email: str, access_level: AccessLevel) -> None:
+        """"
+        Adds user to the group.
+        """
+
+        token = self.__authProvider()
+        input = {
+            'accessLevel': access_level
+        }
+        endpoint = f'groups/{group_id}/users/{user_email}'
+        response = self.__put(token, endpoint, input)
+        return response
 
     def confirm_document_upload(self, facility_id: str, upload_inputs: Any) -> Any:
         """

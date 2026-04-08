@@ -1,7 +1,9 @@
-from typing import List, Literal
+from typing import List
 import requests
 
-def create_token(client_id: str, client_secret: str, scope: List[str], env: Literal['prod', 'stg'] = 'prod') -> str:
+from .constants import Environment
+
+def create_token(client_id: str, client_secret: str, scope: List[str], env: Environment = Environment.PROD) -> str:
     """ Creates 2-legged authorization token. """
 
     base_url = {

@@ -1,13 +1,18 @@
+import base64
 from typing import Any
 
 from .constants import (
+    ELEMENT_FLAGS_DOCUMENT_ROOT,
     ELEMENT_FLAGS_GENERIC_ASSET,
     ELEMENT_FLAGS_LEVEL,
     ELEMENT_FLAGS_STREAM,
     ELEMENT_FLAGS_SYSTEM,
     ELEMENT_FLAGS_TICKET,
+    ELEMENT_FLAGS_FAMILY_TYPE,
+    ELEMENT_ID_SIZE,
     SYSTEM_CLASS_NAMES
 )
+from .encoding import __make_web_safe
 
 def get_default_model(facility_id: str, facility: Any) -> Any | None:
     """
@@ -27,6 +32,14 @@ def get_default_model_id(facility_id: str) -> str:
     
     return facility_id.replace('urn:adsk.dtt:', 'urn:adsk.dtm:')
 
+def get_root_id() -> str:
+    """
+    Returns id of root element.
+    """
+
+    buff = bytearray(ELEMENT_ID_SIZE)
+    return __make_web_safe(base64.b64encode(buff).decode('utf-8'))
+
 def is_logical_element(element_flags: int) -> bool:
     """
     Returns true if the element is a logical element.
@@ -36,7 +49,9 @@ def is_logical_element(element_flags: int) -> bool:
             element_flags == ELEMENT_FLAGS_LEVEL or
             element_flags == ELEMENT_FLAGS_GENERIC_ASSET or
             element_flags == ELEMENT_FLAGS_SYSTEM or
-            element_flags == ELEMENT_FLAGS_TICKET)
+            element_flags == ELEMENT_FLAGS_FAMILY_TYPE or
+            element_flags == ELEMENT_FLAGS_TICKET or
+            element_flags == ELEMENT_FLAGS_DOCUMENT_ROOT)
 
 def match_classification(a: str, b: str) -> bool:
     """
