@@ -2,13 +2,7 @@ import base64
 from typing import Any
 
 from .constants import (
-    ELEMENT_FLAGS_DOCUMENT_ROOT,
-    ELEMENT_FLAGS_GENERIC_ASSET,
-    ELEMENT_FLAGS_LEVEL,
-    ELEMENT_FLAGS_STREAM,
-    ELEMENT_FLAGS_SYSTEM,
-    ELEMENT_FLAGS_TICKET,
-    ELEMENT_FLAGS_FAMILY_TYPE,
+    ELEMENT_FLAGS_ALL_LOGICAL_MASK,
     ELEMENT_ID_SIZE,
     SYSTEM_CLASS_NAMES
 )
@@ -45,13 +39,7 @@ def is_logical_element(element_flags: int) -> bool:
     Returns true if the element is a logical element.
     """
 
-    return (element_flags == ELEMENT_FLAGS_STREAM or
-            element_flags == ELEMENT_FLAGS_LEVEL or
-            element_flags == ELEMENT_FLAGS_GENERIC_ASSET or
-            element_flags == ELEMENT_FLAGS_SYSTEM or
-            element_flags == ELEMENT_FLAGS_FAMILY_TYPE or
-            element_flags == ELEMENT_FLAGS_TICKET or
-            element_flags == ELEMENT_FLAGS_DOCUMENT_ROOT)
+    return bool(element_flags & ELEMENT_FLAGS_ALL_LOGICAL_MASK)
 
 def match_classification(a: str, b: str) -> bool:
     """
