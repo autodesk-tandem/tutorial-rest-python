@@ -11,12 +11,13 @@ from common.tandemClient import TandemClient
 from common.constants import (
     COLUMN_FAMILIES_REFS,
     COLUMN_FAMILIES_STANDARD,
+    QC_ELEMENT_FLAGS,
     QC_KEY,
     QC_LEVEL,
     QC_NAME
 )
 from common.encoding import to_full_key, to_xref_key
-from common.utils import get_default_model
+from common.utils import get_default_model, is_logical_element
 
 # update values below according to your environment
 APS_CLIENT_ID = 'YOUR_CLIENT_ID'
@@ -70,7 +71,7 @@ def main():
             print(f'Level {level_details.get(QC_NAME, None)} not found')
             return
         # STEP 5 - create new stream. First step is to encode keys for references. In our case host element and room are same.
-        target_room_key = to_full_key(target_room.get(QC_KEY))
+        target_room_key = to_full_key(target_room.get(QC_KEY), is_logical_element(target_room.get(QC_ELEMENT_FLAGS)))
         parent_xref = to_xref_key(target_room_model_id, target_room_key)
         # create new stream
         stream_id = client.create_stream(

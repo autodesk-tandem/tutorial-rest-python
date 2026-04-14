@@ -12,7 +12,7 @@ from common.constants import (
     QC_NAME,
     QC_ONAME
 )
-from common.encoding import to_full_key, to_short_key
+from common.encoding import to_short_key
 from common.utils import get_default_model
 
 # update values below according to your environment

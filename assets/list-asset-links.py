@@ -7,7 +7,6 @@ It uses 2-legged authentication - this requires that application is added to fac
 from common.auth import create_token
 from common.tandemClient import TandemClient
 from common.constants import (
-    KEY_FLAGS_LOGICAL,
     QC_ELEMENT_FLAGS,
     QC_KEY,
     QC_NAME,
@@ -17,6 +16,7 @@ from common.encoding import (
     to_full_key,
     to_xref_key
 )
+from common.utils import is_logical_element
 
 # update values below according to your environment
 APS_CLIENT_ID = 'YOUR_CLIENT_ID'
@@ -36,8 +36,7 @@ def main():
             assets = client.get_tagged_assets(model_id)
             for asset in assets:
                 # STEP 4 - get full key and generate URL to view asset in Tandem
-                is_logical = bool(asset.get(QC_ELEMENT_FLAGS) & KEY_FLAGS_LOGICAL)
-                full_key = to_full_key(asset.get(QC_KEY), is_logical)
+                full_key = to_full_key(asset.get(QC_KEY), is_logical_element(asset.get(QC_ELEMENT_FLAGS)))
                 xref_key = to_xref_key(model_id, full_key)
                 url = f'https://tandem.autodesk.com/pages/facilities/{FACILITY_URN}?selection={xref_key}'
                 # STEP 5 - print out asset name and URL

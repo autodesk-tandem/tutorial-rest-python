@@ -7,14 +7,13 @@ It uses 2-legged authentication - this requires that application is added to fac
 from common.auth import create_token
 from common.tandemClient import TandemClient
 from common.constants import (
-    COLUMN_FAMILIES_STANDARD,
-    COLUMN_FAMILIES_XREFS,
+    QC_ELEMENT_FLAGS,
     QC_KEY,
     QC_NAME,
     QC_XPARENT
 )
 from common.encoding import decode_xref_key, to_full_key
-from common.utils import get_default_model
+from common.utils import get_default_model, is_logical_element
 
 # update values below according to your environment
 APS_CLIENT_ID = 'YOUR_CLIENT_ID'
@@ -68,7 +67,7 @@ def main():
         for model_id, element_keys in model_keys.items():
             elements = client.get_elements(model_id, element_keys)
             for element in elements:
-                full_key = to_full_key(element.get(QC_KEY), False)
+                full_key = to_full_key(element.get(QC_KEY), is_logical_element(element.get(QC_ELEMENT_FLAGS)))
                 item_key = (model_id, full_key)
                 if item_key in stream_lookup:
                     stream_lookup[item_key]['parent']['name'] = element.get(QC_NAME)

@@ -27,6 +27,7 @@ from common.encoding import (
 )
 from common.utils import (
     get_default_model,
+    is_logical_element,
     system_class_to_list
 )
 
@@ -52,7 +53,7 @@ def main():
         system_map = {}
 
         for system in systems:
-            key = to_full_key(system.get(QC_KEY), True)
+            key = to_full_key(system.get(QC_KEY), is_logical_element(system.get(QC_ELEMENT_FLAGS)))
             name = system.get(QC_ONAME) or system.get(QC_NAME)
             parent = system.get(QC_PARENT)
             if parent is not None:

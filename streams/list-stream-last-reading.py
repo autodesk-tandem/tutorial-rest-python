@@ -11,12 +11,13 @@ from common.auth import create_token
 from common.tandemClient import TandemClient
 from common.constants import (
     DATA_TYPE_STRING,
+    QC_ELEMENT_FLAGS,
     QC_KEY,
     QC_NAME,
     QC_ONAME
 )
 from common.encoding import to_full_key
-from common.utils import get_default_model
+from common.utils import get_default_model, is_logical_element
 
 # update values below according to your environment
 APS_CLIENT_ID = 'YOUR_CLIENT_ID'
@@ -44,7 +45,7 @@ def main():
         data = client.get_stream_last_reading(default_model_id, keys)
         for key in data:
             # STEP 6 - read stream name
-            stream = next((s for s in streams if to_full_key(s.get(QC_KEY), True) == key), None)
+            stream = next((s for s in streams if to_full_key(s.get(QC_KEY), is_logical_element(s.get(QC_ELEMENT_FLAGS))) == key), None)
             if stream is None:
                 continue
             name = stream.get(QC_ONAME, None) or stream.get(QC_NAME, None)
