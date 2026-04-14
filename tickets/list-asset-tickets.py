@@ -57,7 +57,7 @@ def main():
                 key = asset.get(QC_KEY, None)
                 if key is None:
                     continue
-                element_key = to_full_key(key, is_logical_element(asset.get(QC_ELEMENT_FLAGS, None)))
+                element_key = to_full_key(key, is_logical_element(asset.get(QC_ELEMENT_FLAGS)))
                 asset_name = asset.get(QC_ONAME) or asset.get(QC_NAME)
                 asset_tickets = asset_tickets_map.get(element_key, [])
                 print(f'Asset: {asset_name} ({element_key}) Tickets: {len(tickets)}')

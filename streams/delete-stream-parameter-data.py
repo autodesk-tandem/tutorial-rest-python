@@ -9,10 +9,11 @@ from common.encoding import to_full_key
 from common.tandemClient import TandemClient
 from common.constants import (
     COLUMN_FAMILIES_DTPROPERTIES,
+    QC_ELEMENT_FLAGS,
     QC_KEY,
     QC_NAME
 )
-from common.utils import get_default_model
+from common.utils import get_default_model, is_logical_element
 
 # update values below according to your environment
 APS_CLIENT_ID = 'YOUR_CLIENT_ID'
@@ -42,7 +43,7 @@ def main():
         if stream is None:
             raise Exception(f'Stream {STREAM_NAME} not found')
         # STEP 5 - get stream data - we use full key because getStreamData expects full key
-        stream_key = to_full_key(stream.get(QC_KEY), True)
+        stream_key = to_full_key(stream.get(QC_KEY), is_logical_element(stream.get(QC_ELEMENT_FLAGS)))
         stream_data = client.get_stream_data(default_model_id, stream_key)
         # STEP 6 - find substream by parameter name
         prop_def = None

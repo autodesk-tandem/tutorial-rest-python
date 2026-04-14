@@ -10,6 +10,7 @@ import re
 from common.auth import create_token
 from common.tandemClient import TandemClient
 from common.constants import (
+    QC_ELEMENT_FLAGS,
     QC_KEY,
     QC_NAME,
     QC_ONAME,
@@ -21,7 +22,7 @@ from common.encoding import (
     to_full_key,
     to_system_id
 )
-from common.utils import get_default_model
+from common.utils import get_default_model, is_logical_element
 
 # update values below according to your environment
 APS_CLIENT_ID = 'YOUR_CLIENT_ID'
@@ -53,7 +54,7 @@ def main():
             # STEP 5 - if item has parent then it is subsystem - decode its parameters
             # using facility template to get parameter names
             if parent is None:
-                full_key = to_full_key(key, True)
+                full_key = to_full_key(key, is_logical_element(item.get(QC_ELEMENT_FLAGS)))
                 systems.append({
                     'name': name,
                     'key': key,
