@@ -95,6 +95,8 @@ class TandemClient:
     @non_public_method
     def apply_facility_template(self, facility_id: str, template: Any) -> None:
         """
+        NON-PUBLIC METHOD: Use carefully.
+
         Applies template to the facility.
         """
 
@@ -145,6 +147,29 @@ class TandemClient:
         response = self.__post(token, endpoint, inputs)
         return response
 
+    def create_facility(self, group_id: str, settings: Dict[str, Any]) -> Any:
+        """
+        Creates new facility with given settings.
+        """
+
+        token = self.__authProvider()
+        endpoint = f'groups/{group_id}/twins'
+        response = self.__post(token, endpoint, settings)
+        return response
+
+    @non_public_method
+    def create_model(self, facility_id: str, model_inputs: Dict[str, Any]) -> Any:
+        """
+        NON-PUBLIC METHOD: Use carefully.
+
+        Creates new model in the facility.
+        """
+
+        token = self.__authProvider()
+        endpoint = f'twins/{facility_id}/model'
+        response = self.__post(token, endpoint, model_inputs)
+        return response
+
     def create_stream(self,
                       model_id: str,
                       name: str,
@@ -184,8 +209,11 @@ class TandemClient:
         response = self.__post(token, endpoint, inputs)
         return response.get('key')
 
+    @non_public_method
     def create_view(self, facility_id: str, view_inputs: Dict[str, Any]) -> Any:
         """
+        NON-PUBLIC METHOD: Use carefully.
+        
         Adds view to the facility.
         """
 
