@@ -115,6 +115,16 @@ class TandemClient:
         result = self.__post(token, endpoint, upload_inputs)
         return result
 
+    def create_default_model(self, facility_id: str, inputs: Any) -> Any:
+        """
+        Creates default model for the facility.
+        """
+
+        token = self.__authProvider()
+        endpoint = f'twins/{facility_id}/defaultmodel'
+        response = self.__post(token, endpoint, inputs)
+        return response
+
     def create_documents(self, facility_id: str, doc_inputs: List[Any]) -> Any:
         """
         Adds documents to the facility.
