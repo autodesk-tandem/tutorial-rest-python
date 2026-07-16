@@ -1,5 +1,7 @@
-from typing import Any, Callable, Dict, List
+import functools
 import requests
+from typing import Any, Callable, Dict, List, TypeVar
+import warnings
 
 from .constants import (
     COLUMN_FAMILIES_DTPROPERTIES,
@@ -28,6 +30,18 @@ from .constants import (
     AccessLevel,
     Environment
 )
+
+F = TypeVar('F', bound=Callable[..., Any])
+
+def non_public_method(func: F) -> F:
+    """Decorator to mark methods as non-public and issue a warning when called."""
+    @functools.wraps(func)
+    def wrapper(*args: Any, **kwargs: Any) -> Any:
+        warnings.warn(f"{func.__name__} is a non-public method and may change or be removed in future versions.",
+                      category=UserWarning,
+                      stacklevel=2)
+        return func(*args, **kwargs)
+    return wrapper  # type: ignore
 
 class TandemClient:
     """ A simple wrapper for Tandem Data API """
@@ -77,6 +91,19 @@ class TandemClient:
         endpoint = f'groups/{group_id}/users/{user_email}'
         response = self.__put(token, endpoint, input)
         return response
+    
+    @non_public_method
+    def apply_facility_template(self, facility_id: str, template: Any) -> None:
+        """
+        Applies template to the facility.
+        """
+
+        token = self.__authProvider()
+        endpoint = f'twins/{facility_id}/template'
+        query_params = {
+            'skipTask': 1
+        }
+        return self.__post(token, endpoint, template, query_params)
 
     def confirm_document_upload(self, facility_id: str, upload_inputs: Any) -> Any:
         """
@@ -675,6 +702,19 @@ class TandemClient:
         endpoint = f'models/{model_id}/stream-configs'
         result = self.__patch(token, endpoint, inputs)
         return result
+    
+    @non_public_method
+    def update_system_connections(self, model_id: str, system_id: str) -> None:
+        """
+        NON-PUBLIC METHOD: Use carefully.
+        
+        Runs task to update system connections for given system.
+        """
+        
+        token = self.__authProvider()
+        endpoint = f'models/{model_id}/systems/{system_id}/map'
+        response = self.__post(token, endpoint)
+        return response
     
     def __get(self, token: str, endpoint: str, params: Dict[str, Any] | None = None) -> Any:
         headers = {
