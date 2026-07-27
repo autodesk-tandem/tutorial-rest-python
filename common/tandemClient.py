@@ -721,6 +721,16 @@ class TandemClient:
         result = self.__put(token, endpoint, inputs)
         return result
 
+    def send_stream_data(self, model_id: str, stream_values: List[Any]) -> None:
+        """"
+        Sends stream data.
+        """
+
+        token = self.__authProvider()
+        endpoint = f'timeseries/models/{model_id}/webhooks/generic'
+        result = self.__post(token, endpoint, stream_values)
+        return result
+
     def upload_document(self, facility_id: str, file_inputs: Any) -> Any:
         """
         Starts document upload for given facility.
