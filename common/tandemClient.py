@@ -1,5 +1,7 @@
-from typing import Any, Callable, Dict, List
+import functools
 import requests
+from typing import Any, Callable, Dict, List, TypeVar
+import warnings
 
 from .constants import (
     COLUMN_FAMILIES_DTPROPERTIES,
@@ -28,6 +30,18 @@ from .constants import (
     AccessLevel,
     Environment
 )
+
+F = TypeVar('F', bound=Callable[..., Any])
+
+def non_public_method(func: F) -> F:
+    """Decorator to mark methods as non-public and issue a warning when called."""
+    @functools.wraps(func)
+    def wrapper(*args: Any, **kwargs: Any) -> Any:
+        warnings.warn(f"{func.__name__} is a non-public method and may change or be removed in future versions.",
+                      category=UserWarning,
+                      stacklevel=2)
+        return func(*args, **kwargs)
+    return wrapper  # type: ignore
 
 class TandemClient:
     """ A simple wrapper for Tandem Data API """
@@ -77,6 +91,21 @@ class TandemClient:
         endpoint = f'groups/{group_id}/users/{user_email}'
         response = self.__put(token, endpoint, input)
         return response
+    
+    @non_public_method
+    def apply_facility_template(self, facility_id: str, template: Any) -> None:
+        """
+        NON-PUBLIC METHOD: Use carefully.
+
+        Applies template to the facility.
+        """
+
+        token = self.__authProvider()
+        endpoint = f'twins/{facility_id}/template'
+        query_params = {
+            'skipTask': 1
+        }
+        return self.__post(token, endpoint, template, query_params)
 
     def confirm_document_upload(self, facility_id: str, upload_inputs: Any) -> Any:
         """
@@ -87,6 +116,16 @@ class TandemClient:
         endpoint = f'twins/{facility_id}/documents/confirmupload'
         result = self.__post(token, endpoint, upload_inputs)
         return result
+
+    def create_default_model(self, facility_id: str, inputs: Any) -> Any:
+        """
+        Creates default model for the facility.
+        """
+
+        token = self.__authProvider()
+        endpoint = f'twins/{facility_id}/defaultmodel'
+        response = self.__post(token, endpoint, inputs)
+        return response
 
     def create_documents(self, facility_id: str, doc_inputs: List[Any]) -> Any:
         """
@@ -106,6 +145,29 @@ class TandemClient:
         token = self.__authProvider()
         endpoint = f'modeldata/{model_id}/create'
         response = self.__post(token, endpoint, inputs)
+        return response
+
+    def create_facility(self, group_id: str, settings: Dict[str, Any]) -> Any:
+        """
+        Creates new facility with given settings.
+        """
+
+        token = self.__authProvider()
+        endpoint = f'groups/{group_id}/twins'
+        response = self.__post(token, endpoint, settings)
+        return response
+
+    @non_public_method
+    def create_model(self, facility_id: str, model_inputs: Dict[str, Any]) -> Any:
+        """
+        NON-PUBLIC METHOD: Use carefully.
+
+        Creates new model in the facility.
+        """
+
+        token = self.__authProvider()
+        endpoint = f'twins/{facility_id}/model'
+        response = self.__post(token, endpoint, model_inputs)
         return response
 
     def create_stream(self,
@@ -147,8 +209,11 @@ class TandemClient:
         response = self.__post(token, endpoint, inputs)
         return response.get('key')
 
+    @non_public_method
     def create_view(self, facility_id: str, view_inputs: Dict[str, Any]) -> Any:
         """
+        NON-PUBLIC METHOD: Use carefully.
+        
         Adds view to the facility.
         """
 
@@ -656,6 +721,16 @@ class TandemClient:
         result = self.__put(token, endpoint, inputs)
         return result
 
+    def send_stream_data(self, model_id: str, stream_values: List[Any]) -> None:
+        """"
+        Sends stream data.
+        """
+
+        token = self.__authProvider()
+        endpoint = f'timeseries/models/{model_id}/webhooks/generic'
+        result = self.__post(token, endpoint, stream_values)
+        return result
+
     def upload_document(self, facility_id: str, file_inputs: Any) -> Any:
         """
         Starts document upload for given facility.
@@ -675,6 +750,19 @@ class TandemClient:
         endpoint = f'models/{model_id}/stream-configs'
         result = self.__patch(token, endpoint, inputs)
         return result
+    
+    @non_public_method
+    def update_system_connections(self, model_id: str, system_id: str) -> None:
+        """
+        NON-PUBLIC METHOD: Use carefully.
+        
+        Runs task to update system connections for given system.
+        """
+        
+        token = self.__authProvider()
+        endpoint = f'models/{model_id}/systems/{system_id}/map'
+        response = self.__post(token, endpoint)
+        return response
     
     def __get(self, token: str, endpoint: str, params: Dict[str, Any] | None = None) -> Any:
         headers = {

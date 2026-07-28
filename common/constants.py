@@ -167,6 +167,9 @@ SYSTEM_CLASS_NAMES = [
 	'Storm'
 ]
 
+SYSTEMS_STATE_DIRTY = 'd'
+SYSTEMS_STATE_READY = 'r'
+
 # category related constants
 TC_FACILITY = 'L.Fa'
 TC_LEVELS = 'L.Lv'
