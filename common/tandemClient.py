@@ -7,6 +7,7 @@ from .constants import (
     COLUMN_FAMILIES_DTPROPERTIES,
     COLUMN_FAMILIES_REFS,
     COLUMN_FAMILIES_STANDARD,
+    COLUMN_FAMILIES_STATUS,
     COLUMN_FAMILIES_SYSTEMS,
     COLUMN_FAMILIES_XREFS,
     COLUMN_NAMES_CATEGORY_ID,
@@ -559,7 +560,7 @@ class TandemClient:
                 results.append(elem)
         return results
     
-    def get_systems(self, model_id: str, column_families: List[str] = [ COLUMN_FAMILIES_STANDARD, COLUMN_FAMILIES_REFS, COLUMN_FAMILIES_SYSTEMS ]) -> Any:
+    def get_systems(self, model_id: str, column_families: List[str] = [ COLUMN_FAMILIES_STANDARD, COLUMN_FAMILIES_REFS, COLUMN_FAMILIES_SYSTEMS, COLUMN_FAMILIES_STATUS ]) -> Any:
         """
         Returns system elements from given model.
         """
